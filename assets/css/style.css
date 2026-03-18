@@ -1,6 +1,6 @@
 /* ── Variables ── */
 :root {
-  --cream: blue;
+  --generic_background: rgba(19, 157, 221, 0.664);
   --ink: #1a1612;
   --ink-soft: #4a4340;
   --accent: #c97d4e;
@@ -19,7 +19,7 @@ html { scroll-behavior: smooth; }
 
 /* ── Base ── */
 body {
-  background-color: var(--cream);
+  background-color: var(--generic_background);
   color: var(--ink);
   font-family: var(--font-body);
   font-size: 16px;
