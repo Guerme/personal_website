@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hometown · Winn</title>
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <link rel="stylesheet" href="assets/css/map.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <!-- OpenLayers -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ol@9.2.4/ol.css" />
+  <script src="https://cdn.jsdelivr.net/npm/ol@9.2.4/dist/ol.js"></script>
+</head>
+<body>
+
+  <!-- Ambient background blobs -->
+  <div class="bg-blob blob-1"></div>
+  <div class="bg-blob blob-2"></div>
+  <div class="bg-blob blob-3"></div>
+
+  <main class="container map-page">
+
+    <!-- NAV -->
+    <nav class="site-nav">
+      <a href="index.html" class="nav-link">← Back to Bio</a>
+    </nav>
+
+    <!-- HEADER -->
+    <section class="hero map-hero">
+      <div class="hero-text">
+        <p class="eyebrow">Hometown</p>
+        <h1 class="name">Missoula</h1>
+        <p class="tagline">Missoula, Montana &nbsp;·&nbsp; The Garden City</p>
+      </div>
+    </section>
+
+    <!-- MAP CARD -->
+    <section class="card map-card">
+      <span class="card-label">Where I'm From</span>
+      <p class="map-intro">
+        Nestled in the Rocky Mountains where five valleys meet, Missoula is a place of wild rivers,
+        old-growth forests, and a spirit that's hard to find anywhere else. It shaped how I think,
+        what I value, and where I call home.
+      </p>
+
+      <!-- Map container -->
+      <div id="map"></div>
+
+      <!-- Stat pills -->
+      <div class="map-stats">
+        <div class="stat">
+          <span class="stat-val">46.87°N</span>
+          <span class="stat-key">Latitude</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat">
+          <span class="stat-val">114.01°W</span>
+          <span class="stat-key">Longitude</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat">
+          <span class="stat-val">3,209 ft</span>
+          <span class="stat-key">Elevation</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat">
+          <span class="stat-val">~75k</span>
+          <span class="stat-key">Population</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- HIGHLIGHTS CARD -->
+    <section class="card highlights-card">
+      <span class="card-label">Why Missoula</span>
+      <div class="highlights">
+        <div class="highlight">
+          <div class="highlight-icon">🏔</div>
+          <div class="highlight-text">
+            <strong>Big Sky Country</strong>
+            <p>Surrounded by mountain ranges — the Rattlesnake Wilderness is practically in the backyard.</p>
+          </div>
+        </div>
+        <div class="highlight">
+          <div class="highlight-icon">🏞</div>
+          <div class="highlight-text">
+            <strong>Clark Fork River</strong>
+            <p>A wild river running right through downtown. Kayaking, fishing, and evening walks along the banks.</p>
+          </div>
+        </div>
+        <div class="highlight">
+          <div class="highlight-icon">📚</div>
+          <div class="highlight-text">
+            <strong>University Town</strong>
+            <p>Home to the University of Montana — arts, culture, and a community that loves learning.</p>
+          </div>
+        </div>
+        <div class="highlight">
+          <div class="highlight-icon">🌲</div>
+          <div class="highlight-text">
+            <strong>True Four Seasons</strong>
+            <p>Snowshoe in winter, hike in summer, watch the larch trees turn gold every fall.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <p>Made with care &nbsp;·&nbsp; <span class="footer-name">Winn</span></p>
+    </footer>
+
+  </main>
+
+  <script src="assets/js/map.js"></script>
+</body>
+</html>
