@@ -134,8 +134,8 @@ function buildPopupHTML(feature) {
   const websiteLine = website ? `<br><a href="${website}" target="_blank" rel="noopener" style="font-size:11px;color:#5a8fa8;text-decoration:none;">Website: ${website}</a>` : '';
   return `
     <button onclick="closePopup()" style="position:absolute;top:4px;right:6px;background:none;border:none;cursor:pointer;font-size:14px;color:#999;line-height:1;padding:0;">✕</button>
-    <strong>${feature.get('name')}</strong><br>
-    <span style="color:${color};font-size:11px">${label} &nbsp;·&nbsp; ${status}</span>${websiteLine}
+    <strong>${feature.get('name')} ${label}</strong><br>
+    <span style="color:${color};font-size:11px">${status}</span>${websiteLine}
   `;
 }
 
