@@ -3,6 +3,7 @@ const vectorSource = new ol.source.Vector();
 const vectorLayer  = new ol.layer.Vector({ source: vectorSource });
 let alaska_map;
 let hawaii_map;
+let samoa_map;
 let marianas_map;
 
 const main_map = new ol.Map({
@@ -123,6 +124,58 @@ hawaii_label.style.cssText = `
   z-index: 1;
 `;
 hawaii_map.getViewport().appendChild(hawaii_label);
+
+// ── American Samoa Inset Map ──
+const samoa_wrapper = document.createElement('div');
+samoa_wrapper.id = 'samoa-inset';
+samoa_wrapper.style.cssText = `
+  position: absolute;
+  bottom: 490px;
+  left: 20px;
+  width: 250px;
+  height: 150px;
+  z-index: 10;
+  filter: drop-shadow(0 2px 8px rgba(0,0,0,0.2));
+`;
+main_map.getTargetElement().appendChild(samoa_wrapper);
+
+const samoa_div = document.createElement('div');
+samoa_div.style.cssText = `width: 100%; height: 100%; overflow: hidden;`;
+samoa_div.style.clipPath = "path('M 8,0 H 242 A 8,8 0 0 1 250,8 V 142 A 8,8 0 0 1 242,150 H 8 A 8,8 0 0 1 0,142 V 8 A 8,8 0 0 1 8,0 Z')";
+samoa_wrapper.appendChild(samoa_div);
+
+samoa_map = new ol.Map({
+  target: samoa_div,
+  layers: [
+    new ol.layer.Tile({ source: new ol.source.OSM() }),
+    new ol.layer.Vector({ source: vectorSource }),
+  ],
+  view: new ol.View({
+    center: ol.proj.fromLonLat([-169.7, -14.4]),
+    zoom: 7,
+    minZoom: 2,
+    maxZoom: 14,
+  }),
+  controls: ol.control.defaults.defaults({ attributionOptions: { collapsible: false } }),
+});
+
+const samoa_label = document.createElement('div');
+samoa_label.innerHTML = 'American<br>Samoa';
+samoa_label.style.cssText = `
+  position: absolute;
+  bottom: 8px;
+  left: 6px;
+  line-height: 1.3;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(0,0,0,0.5);
+  pointer-events: none;
+  z-index: 1;
+`;
+samoa_map.getViewport().appendChild(samoa_label);
 
 // ── Marianas Inset Map ──
 const marianas_wrapper = document.createElement('div');
@@ -373,6 +426,7 @@ function registerMapHandlers(mapInstance) {
 registerMapHandlers(main_map);
 registerMapHandlers(alaska_map);
 registerMapHandlers(hawaii_map);
+registerMapHandlers(samoa_map);
 registerMapHandlers(marianas_map);
 
 // ── Legend ──
@@ -504,7 +558,7 @@ function toggleMonFilter(which) {
 }
 
 // ── Render ──
-vectorSource.on('change', () => { alaska_map.render(); hawaii_map.render(); marianas_map.render(); });
+vectorSource.on('change', () => { alaska_map.render(); hawaii_map.render(); samoa_map.render(); marianas_map.render(); });
 
 const observer = new IntersectionObserver(entries => {
   entries.forEach(entry => {

@@ -414,6 +414,7 @@ html, body {
 /* ── Inset Map Zoom Buttons (50% smaller) ── */
 #alaska-inset .ol-zoom,
 #hawaii-inset .ol-zoom,
+#samoa-inset .ol-zoom,
 #marianas-inset .ol-zoom {
   top: 6px !important;
   left: 6px !important;
@@ -421,6 +422,8 @@ html, body {
 
 #hawaii-inset .ol-zoom .ol-zoom-in,
 #hawaii-inset .ol-zoom .ol-zoom-out,
+#samoa-inset .ol-zoom .ol-zoom-in,
+#samoa-inset .ol-zoom .ol-zoom-out,
 #marianas-inset .ol-zoom .ol-zoom-in,
 #marianas-inset .ol-zoom .ol-zoom-out {
   font-size: 9px !important;
