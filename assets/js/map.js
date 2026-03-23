@@ -7,8 +7,8 @@ const map = new ol.Map({
   target: 'map',
   layers: [new ol.layer.Tile({ source: new ol.source.OSM() }), vectorLayer],
   view: new ol.View({
-    center: ol.proj.fromLonLat([-98, 39]),
-    zoom: 5,
+    center: ol.proj.fromLonLat([-100, 38]),
+    zoom: 5.2,
     minZoom: 2,
     maxZoom: 18,
   }),
@@ -16,19 +16,29 @@ const map = new ol.Map({
 });
 
 // ── Alaska Inset Map ──
-const insetDiv = document.createElement('div');
-insetDiv.style.cssText = `
+// Wrapper carries the shadow (drop-shadow follows the clipped shape)
+const insetWrapper = document.createElement('div');
+insetWrapper.style.cssText = `
   position: absolute;
   bottom: 20px;
   left: 20px;
-  width: 230px;
-  height: 160px;
-  border-radius: 8px;
-  overflow: hidden;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  width: 400px;
+  height: 300px;
   z-index: 10;
+  filter: drop-shadow(0 2px 8px rgba(0,0,0,0.2));
 `;
-map.getTargetElement().appendChild(insetDiv);
+map.getTargetElement().appendChild(insetWrapper);
+
+// Inner div clips to the chamfered shape with rounded corners (r=8)
+// 400×300: diagonal cut from (300,0) to (400,75), rounded at the 3 right-angle corners
+const insetDiv = document.createElement('div');
+insetDiv.style.cssText = `
+  width: 100%;
+  height: 100%;
+  clip-path: path('m 8,0 h 234 c 10.08645,0.22903816 13.89497,3.3440934 20.77009,10.705872 L 392.84965,143.09541 c 5.78131,5.61884 5.96965,5.58121 7.29264,13.68914 L 400,292 c -0.005,4.41828 -3.58172,8 -8,8 H 8 c -4.418278,0 -8,-3.58172 -8,-8 V 8 C 0,3.581722 3.581722,0 8,0 Z');
+  overflow: hidden;
+`;
+insetWrapper.appendChild(insetDiv);
 
 insetMap = new ol.Map({
   target: insetDiv,
@@ -37,8 +47,8 @@ insetMap = new ol.Map({
     new ol.layer.Vector({ source: vectorSource }),
   ],
   view: new ol.View({
-    center: ol.proj.fromLonLat([-153, 64]),
-    zoom: 3,
+    center: ol.proj.fromLonLat([-153, 61.5]),
+    zoom: 3.4,
     minZoom: 2,
     maxZoom: 10,
   }),
@@ -261,9 +271,9 @@ registerMapHandlers(map);
 registerMapHandlers(insetMap);
 
 // ── Legend ──
-const legendEl = document.createElement('div');
-legendEl.className = 'map-legend';
-legendEl.innerHTML = `
+const legend = document.createElement('div');
+legend.className = 'map-legend';
+legend.innerHTML = `
   <div class="legend-handle" id="legend-handle">
     <span class="legend-title">Legend</span>
     <span class="legend-drag-hint">⠿</span>
@@ -313,17 +323,17 @@ legendEl.innerHTML = `
   </div>
 `;
 
-legendEl.addEventListener('pointerdown', e => e.stopPropagation());
-legendEl.addEventListener('click',       e => e.stopPropagation());
-map.getViewport().appendChild(legendEl);
+legend.addEventListener('pointerdown', e => e.stopPropagation());
+legend.addEventListener('click',       e => e.stopPropagation());
+map.getViewport().appendChild(legend);
 
 map.once('rendercomplete', () => {
-  const pixel = map.getPixelFromCoordinate(ol.proj.fromLonLat([-132.5, 38]));
+  const pixel = map.getPixelFromCoordinate(ol.proj.fromLonLat([-132.5, 44.2]));
   if (pixel) {
-    legendEl.style.right  = 'auto';
-    legendEl.style.bottom = 'auto';
-    legendEl.style.left   = `${pixel[0] - legendEl.offsetWidth  / 2}px`;
-    legendEl.style.top    = `${pixel[1] - legendEl.offsetHeight / 2}px`;
+    legend.style.right  = 'auto';
+    legend.style.bottom = 'auto';
+    legend.style.left   = `${pixel[0] - legend.offsetWidth  / 2}px`;
+    legend.style.top    = `${pixel[1] - legend.offsetHeight / 2}px`;
   }
 });
 
@@ -332,7 +342,7 @@ let dragging = false, dragOffX = 0, dragOffY = 0;
 
 dragHandle.addEventListener('mousedown', e => {
   dragging = true;
-  const rect = legendEl.getBoundingClientRect();
+  const rect = legend.getBoundingClientRect();
   dragOffX = e.clientX - rect.left;
   dragOffY = e.clientY - rect.top;
   e.preventDefault();
@@ -344,12 +354,12 @@ document.addEventListener('mousemove', e => {
   const vpRect = vp.getBoundingClientRect();
   let x = e.clientX - vpRect.left - dragOffX;
   let y = e.clientY - vpRect.top  - dragOffY;
-  x = Math.max(0, Math.min(x, vpRect.width  - legendEl.offsetWidth));
-  y = Math.max(0, Math.min(y, vpRect.height - legendEl.offsetHeight));
-  legendEl.style.left   = `${x}px`;
-  legendEl.style.top    = `${y}px`;
-  legendEl.style.right  = 'auto';
-  legendEl.style.bottom = 'auto';
+  x = Math.max(0, Math.min(x, vpRect.width  - legend.offsetWidth));
+  y = Math.max(0, Math.min(y, vpRect.height - legend.offsetHeight));
+  legend.style.left   = `${x}px`;
+  legend.style.top    = `${y}px`;
+  legend.style.right  = 'auto';
+  legend.style.bottom = 'auto';
 });
 
 document.addEventListener('mouseup', () => { dragging = false; });
