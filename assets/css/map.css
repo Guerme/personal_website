@@ -415,7 +415,8 @@ html, body {
 #alaska-inset .ol-zoom,
 #hawaii-inset .ol-zoom,
 #samoa-inset .ol-zoom,
-#marianas-inset .ol-zoom {
+#marianas-inset .ol-zoom,
+#virgin-islands-inset .ol-zoom {
   top: 6px !important;
   left: 6px !important;
 }
@@ -425,7 +426,9 @@ html, body {
 #samoa-inset .ol-zoom .ol-zoom-in,
 #samoa-inset .ol-zoom .ol-zoom-out,
 #marianas-inset .ol-zoom .ol-zoom-in,
-#marianas-inset .ol-zoom .ol-zoom-out {
+#marianas-inset .ol-zoom .ol-zoom-out,
+#virgin-islands-inset .ol-zoom .ol-zoom-in,
+#virgin-islands-inset .ol-zoom .ol-zoom-out {
   font-size: 9px !important;
   width: 16px !important;
   height: 16px !important;

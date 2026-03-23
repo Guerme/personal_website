@@ -5,6 +5,7 @@ let alaska_map;
 let hawaii_map;
 let samoa_map;
 let marianas_map;
+let virgin_islands_map;
 
 const main_map = new ol.Map({
   target: 'map',
@@ -228,6 +229,58 @@ marianas_label.style.cssText = `
 `;
 marianas_map.getViewport().appendChild(marianas_label);
 
+// ── Virgin Islands Inset Map ──
+const virgin_islands_wrapper = document.createElement('div');
+virgin_islands_wrapper.id = 'virgin-islands-inset';
+virgin_islands_wrapper.style.cssText = `
+  position: absolute;
+  bottom: 20px;
+  left: 1100px;
+  width: 250px;
+  height: 120px;
+  z-index: 10;
+  filter: drop-shadow(0 2px 8px rgba(0,0,0,0.2));
+`;
+main_map.getTargetElement().appendChild(virgin_islands_wrapper);
+
+const virgin_islands_div = document.createElement('div');
+virgin_islands_div.style.cssText = `width: 100%; height: 100%; overflow: hidden;`;
+virgin_islands_div.style.clipPath = "path('M 8,0 H 242 A 8,8 0 0 1 250,8 V 112 A 8,8 0 0 1 242,120 H 8 A 8,8 0 0 1 0,112 V 8 A 8,8 0 0 1 8,0 Z')";
+virgin_islands_wrapper.appendChild(virgin_islands_div);
+
+virgin_islands_map = new ol.Map({
+  target: virgin_islands_div,
+  layers: [
+    new ol.layer.Tile({ source: new ol.source.OSM() }),
+    new ol.layer.Vector({ source: vectorSource }),
+  ],
+  view: new ol.View({
+    center: ol.proj.fromLonLat([-64.7, 18.05]),
+    zoom: 7,
+    minZoom: 2,
+    maxZoom: 14,
+  }),
+  controls: ol.control.defaults.defaults({ attributionOptions: { collapsible: false } }),
+});
+
+const virgin_islands_label = document.createElement('div');
+virgin_islands_label.innerHTML = 'Virgin<br>Islands';
+virgin_islands_label.style.cssText = `
+  position: absolute;
+  bottom: 2px;
+  left: 6px;
+  line-height: 1.3;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(0,0,0,0.5);
+  pointer-events: none;
+  z-index: 1;
+`;
+virgin_islands_map.getViewport().appendChild(virgin_islands_label);
+
 // ── Styles ──
 const afrhStyle    = new ol.style.Style({ image: new ol.style.Icon({ src: 'assets/symbology/afrh-logo.svg',          width: 20, height: 20 }) });
 const afrhSelected = new ol.style.Style({ image: new ol.style.Icon({ src: 'assets/symbology/afrh-logo-selected.svg', width: 24, height: 24 }) });
@@ -428,6 +481,7 @@ registerMapHandlers(alaska_map);
 registerMapHandlers(hawaii_map);
 registerMapHandlers(samoa_map);
 registerMapHandlers(marianas_map);
+registerMapHandlers(virgin_islands_map);
 
 // ── Legend ──
 const legend = document.createElement('div');
@@ -558,7 +612,7 @@ function toggleMonFilter(which) {
 }
 
 // ── Render ──
-vectorSource.on('change', () => { alaska_map.render(); hawaii_map.render(); samoa_map.render(); marianas_map.render(); });
+vectorSource.on('change', () => { alaska_map.render(); hawaii_map.render(); samoa_map.render(); marianas_map.render(); virgin_islands_map.render(); });
 
 const observer = new IntersectionObserver(entries => {
   entries.forEach(entry => {
