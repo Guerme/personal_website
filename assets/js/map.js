@@ -1,9 +1,10 @@
 // ── Main Map ──
 const vectorSource = new ol.source.Vector();
 const vectorLayer  = new ol.layer.Vector({ source: vectorSource });
-let insetMap;
+let alaska_map;
+let hawaii_map;
 
-const map = new ol.Map({
+const main_map = new ol.Map({
   target: 'map',
   layers: [new ol.layer.Tile({ source: new ol.source.OSM() }), vectorLayer],
   view: new ol.View({
@@ -17,8 +18,8 @@ const map = new ol.Map({
 
 // ── Alaska Inset Map ──
 // Wrapper carries the shadow (drop-shadow follows the clipped shape)
-const insetWrapper = document.createElement('div');
-insetWrapper.style.cssText = `
+const alaska_wrapper = document.createElement('div');
+alaska_wrapper.style.cssText = `
   position: absolute;
   bottom: 20px;
   left: 20px;
@@ -27,21 +28,19 @@ insetWrapper.style.cssText = `
   z-index: 10;
   filter: drop-shadow(0 2px 8px rgba(0,0,0,0.2));
 `;
-map.getTargetElement().appendChild(insetWrapper);
+main_map.getTargetElement().appendChild(alaska_wrapper);
 
 // Inner div clips to the chamfered shape with rounded corners (r=8)
 // 400×300: diagonal cut from (300,0) to (400,75), rounded at the 3 right-angle corners
-const insetDiv = document.createElement('div');
-insetDiv.style.cssText = `
-  width: 100%;
-  height: 100%;
-  clip-path: path('m 8,0 h 234 c 10.08645,0.22903816 13.89497,3.3440934 20.77009,10.705872 L 392.84965,143.09541 c 5.78131,5.61884 5.96965,5.58121 7.29264,13.68914 L 400,292 c -0.005,4.41828 -3.58172,8 -8,8 H 8 c -4.418278,0 -8,-3.58172 -8,-8 V 8 C 0,3.581722 3.581722,0 8,0 Z');
-  overflow: hidden;
-`;
-insetWrapper.appendChild(insetDiv);
+const alaska_div = document.createElement('div');
+alaska_div.style.cssText = `width: 100%; height: 100%; overflow: hidden;`;
+alaska_div.style.clipPath = "path('m 8,0 h 234 c 10.08645,0.22903816 13.89497,3.3440934 20.77009,10.705872 " +
+                            "L 392.84965,143.09541 c 5.78131,5.61884 5.96965,5.58121 7.29264,13.68914 L 400,292 " +
+                            "c -0.005,4.41828 -3.58172,8 -8,8 H 8 c -4.418278,0 -8,-3.58172 -8,-8 V 8 C 0,3.581722 3.581722,0 8,0 Z')";
+alaska_wrapper.appendChild(alaska_div);
 
-insetMap = new ol.Map({
-  target: insetDiv,
+alaska_map = new ol.Map({
+  target: alaska_div,
   layers: [
     new ol.layer.Tile({ source: new ol.source.OSM() }),
     new ol.layer.Vector({ source: vectorSource }),
@@ -55,9 +54,9 @@ insetMap = new ol.Map({
   controls: ol.control.defaults.defaults({ attributionOptions: { collapsible: false } }),
 });
 
-const insetLabel = document.createElement('div');
-insetLabel.textContent = 'Alaska';
-insetLabel.style.cssText = `
+const alaska_label = document.createElement('div');
+alaska_label.textContent = 'Alaska';
+alaska_label.style.cssText = `
   position: absolute;
   bottom: 4px;
   left: 6px;
@@ -70,7 +69,57 @@ insetLabel.style.cssText = `
   pointer-events: none;
   z-index: 1;
 `;
-insetMap.getViewport().appendChild(insetLabel);
+alaska_map.getViewport().appendChild(alaska_label);
+
+// ── Hawaii Inset Map ──
+const hawaii_wrapper = document.createElement('div');
+hawaii_wrapper.style.cssText = `
+  position: absolute;
+  bottom: 330px;
+  left: 20px;
+  width: 250px;
+  height: 150px;
+  z-index: 10;
+  filter: drop-shadow(0 2px 8px rgba(0,0,0,0.2));
+`;
+main_map.getTargetElement().appendChild(hawaii_wrapper);
+
+const hawaii_div = document.createElement('div');
+hawaii_div.style.cssText = `width: 100%; height: 100%; overflow: hidden;`;
+hawaii_div.style.clipPath = "path('M 8,0 H 242 A 8,8 0 0 1 250,8 V 142 A 8,8 0 0 1 242,150 H 8 A 8,8 0 0 1 0,142 V 8 A 8,8 0 0 1 8,0 Z')";
+hawaii_wrapper.appendChild(hawaii_div);
+
+hawaii_map = new ol.Map({
+  target: hawaii_div,
+  layers: [
+    new ol.layer.Tile({ source: new ol.source.OSM() }),
+    new ol.layer.Vector({ source: vectorSource }),
+  ],
+  view: new ol.View({
+    center: ol.proj.fromLonLat([-165, 20.5]),
+    zoom: 3.9,
+    minZoom: 2,
+    maxZoom: 14,
+  }),
+  controls: ol.control.defaults.defaults({ attributionOptions: { collapsible: false } }),
+});
+
+const hawaii_label = document.createElement('div');
+hawaii_label.textContent = 'Hawaii';
+hawaii_label.style.cssText = `
+  position: absolute;
+  bottom: 4px;
+  left: 6px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(0,0,0,0.5);
+  pointer-events: none;
+  z-index: 1;
+`;
+hawaii_map.getViewport().appendChild(hawaii_label);
 
 // ── Styles ──
 const afrhStyle    = new ol.style.Style({ image: new ol.style.Icon({ src: 'assets/symbology/afrh-logo.svg',          width: 20, height: 20 }) });
@@ -267,8 +316,9 @@ function registerMapHandlers(mapInstance) {
   });
 }
 
-registerMapHandlers(map);
-registerMapHandlers(insetMap);
+registerMapHandlers(main_map);
+registerMapHandlers(alaska_map);
+registerMapHandlers(hawaii_map);
 
 // ── Legend ──
 const legend = document.createElement('div');
@@ -325,10 +375,10 @@ legend.innerHTML = `
 
 legend.addEventListener('pointerdown', e => e.stopPropagation());
 legend.addEventListener('click',       e => e.stopPropagation());
-map.getViewport().appendChild(legend);
+main_map.getViewport().appendChild(legend);
 
-map.once('rendercomplete', () => {
-  const pixel = map.getPixelFromCoordinate(ol.proj.fromLonLat([-132.5, 44.2]));
+main_map.once('rendercomplete', () => {
+  const pixel = main_map.getPixelFromCoordinate(ol.proj.fromLonLat([-68.8, 34.5]));
   if (pixel) {
     legend.style.right  = 'auto';
     legend.style.bottom = 'auto';
@@ -350,7 +400,7 @@ dragHandle.addEventListener('mousedown', e => {
 
 document.addEventListener('mousemove', e => {
   if (!dragging) return;
-  const vp     = map.getViewport();
+  const vp     = main_map.getViewport();
   const vpRect = vp.getBoundingClientRect();
   let x = e.clientX - vpRect.left - dragOffX;
   let y = e.clientY - vpRect.top  - dragOffY;
@@ -377,7 +427,8 @@ function toggleParkFilter(which) {
     const hidden = (!isVisited && parkFilter.visited) || (isVisited && parkFilter.unvisited);
     hidden ? f.setStyle([]) : restoreStyle(f);
   });
-  if (insetMap) insetMap.render();
+  if (alaska_map) alaska_map.render();
+  if (hawaii_map) hawaii_map.render();
 }
 
 // ── Monument filters ──
@@ -393,17 +444,18 @@ function toggleMonFilter(which) {
     const hidden = (!isVisited && monFilter.visited) || (isVisited && monFilter.unvisited);
     hidden ? f.setStyle([]) : restoreStyle(f);
   });
-  if (insetMap) insetMap.render();
+  if (alaska_map) alaska_map.render();
+  if (hawaii_map) hawaii_map.render();
 }
 
 // ── Render ──
-vectorSource.on('change', () => insetMap.render());
+vectorSource.on('change', () => { alaska_map.render(); hawaii_map.render(); });
 
 const observer = new IntersectionObserver(entries => {
   entries.forEach(entry => {
     if (entry.isIntersecting) {
-      map.updateSize();
-      insetMap.updateSize();
+      main_map.updateSize();
+      alaska_map.updateSize();
       observer.unobserve(entry.target);
     }
   });
