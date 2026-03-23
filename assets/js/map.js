@@ -3,6 +3,7 @@ const vectorSource = new ol.source.Vector();
 const vectorLayer  = new ol.layer.Vector({ source: vectorSource });
 let alaska_map;
 let hawaii_map;
+let marianas_map;
 
 const main_map = new ol.Map({
   target: 'map',
@@ -19,6 +20,7 @@ const main_map = new ol.Map({
 // ── Alaska Inset Map ──
 // Wrapper carries the shadow (drop-shadow follows the clipped shape)
 const alaska_wrapper = document.createElement('div');
+alaska_wrapper.id = 'alaska-inset';
 alaska_wrapper.style.cssText = `
   position: absolute;
   bottom: 20px;
@@ -46,7 +48,7 @@ alaska_map = new ol.Map({
     new ol.layer.Vector({ source: vectorSource }),
   ],
   view: new ol.View({
-    center: ol.proj.fromLonLat([-153, 61.5]),
+    center: ol.proj.fromLonLat([-153, 61]),
     zoom: 3.4,
     minZoom: 2,
     maxZoom: 10,
@@ -73,6 +75,7 @@ alaska_map.getViewport().appendChild(alaska_label);
 
 // ── Hawaii Inset Map ──
 const hawaii_wrapper = document.createElement('div');
+hawaii_wrapper.id = 'hawaii-inset';
 hawaii_wrapper.style.cssText = `
   position: absolute;
   bottom: 330px;
@@ -96,7 +99,7 @@ hawaii_map = new ol.Map({
     new ol.layer.Vector({ source: vectorSource }),
   ],
   view: new ol.View({
-    center: ol.proj.fromLonLat([-165, 20.5]),
+    center: ol.proj.fromLonLat([-165, 20]),
     zoom: 3.9,
     minZoom: 2,
     maxZoom: 14,
@@ -120,6 +123,57 @@ hawaii_label.style.cssText = `
   z-index: 1;
 `;
 hawaii_map.getViewport().appendChild(hawaii_label);
+
+// ── Marianas Inset Map ──
+const marianas_wrapper = document.createElement('div');
+marianas_wrapper.id = 'marianas-inset';
+marianas_wrapper.style.cssText = `
+  position: absolute;
+  bottom: 20px;
+  left: 430px;
+  width: 170px;
+  height: 150px;
+  z-index: 10;
+  filter: drop-shadow(0 2px 8px rgba(0,0,0,0.2));
+`;
+main_map.getTargetElement().appendChild(marianas_wrapper);
+
+const marianas_div = document.createElement('div');
+marianas_div.style.cssText = `width: 100%; height: 100%; overflow: hidden;`;
+marianas_div.style.clipPath = "path('M 8,0 H 162 A 8,8 0 0 1 170,8 V 142 A 8,8 0 0 1 162,150 H 8 A 8,8 0 0 1 0,142 V 8 A 8,8 0 0 1 8,0 Z')";
+marianas_wrapper.appendChild(marianas_div);
+
+marianas_map = new ol.Map({
+  target: marianas_div,
+  layers: [
+    new ol.layer.Tile({ source: new ol.source.OSM() }),
+    new ol.layer.Vector({ source: vectorSource }),
+  ],
+  view: new ol.View({
+    center: ol.proj.fromLonLat([145, 20]),
+    zoom: 7,
+    minZoom: 2,
+    maxZoom: 14,
+  }),
+  controls: ol.control.defaults.defaults({ attributionOptions: { collapsible: false } }),
+});
+
+const marianas_label = document.createElement('div');
+marianas_label.textContent = 'Marianas';
+marianas_label.style.cssText = `
+  position: absolute;
+  bottom: 20px;
+  left: 6px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(0,0,0,0.5);
+  pointer-events: none;
+  z-index: 1;
+`;
+marianas_map.getViewport().appendChild(marianas_label);
 
 // ── Styles ──
 const afrhStyle    = new ol.style.Style({ image: new ol.style.Icon({ src: 'assets/symbology/afrh-logo.svg',          width: 20, height: 20 }) });
@@ -319,6 +373,7 @@ function registerMapHandlers(mapInstance) {
 registerMapHandlers(main_map);
 registerMapHandlers(alaska_map);
 registerMapHandlers(hawaii_map);
+registerMapHandlers(marianas_map);
 
 // ── Legend ──
 const legend = document.createElement('div');
@@ -449,7 +504,7 @@ function toggleMonFilter(which) {
 }
 
 // ── Render ──
-vectorSource.on('change', () => { alaska_map.render(); hawaii_map.render(); });
+vectorSource.on('change', () => { alaska_map.render(); hawaii_map.render(); marianas_map.render(); });
 
 const observer = new IntersectionObserver(entries => {
   entries.forEach(entry => {

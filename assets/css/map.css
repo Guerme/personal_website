@@ -274,6 +274,21 @@ html, body {
 }
 .ol-attribution a { color: var(--accent) !important; }
 
+/* ── Marianas Attribution (full-width) ── */
+#marianas-inset .ol-attribution {
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  width: 100% !important;
+  border-radius: 0 !important;
+  justify-content: right !important;
+  font-size: 9px !important;
+}
+#marianas-inset .ol-attribution ul {
+  margin: 0 auto !important;
+  font-size: 9px !important;
+}
+
 /* Zoom controls */
 .ol-zoom {
   top: 12px !important;
@@ -394,6 +409,36 @@ html, body {
 @keyframes pulse {
   0%   { transform: scale(0.8); opacity: 1; }
   100% { transform: scale(1.8); opacity: 0; }
+}
+
+/* ── Inset Map Zoom Buttons (50% smaller) ── */
+#alaska-inset .ol-zoom,
+#hawaii-inset .ol-zoom,
+#marianas-inset .ol-zoom {
+  top: 6px !important;
+  left: 6px !important;
+}
+
+#hawaii-inset .ol-zoom .ol-zoom-in,
+#hawaii-inset .ol-zoom .ol-zoom-out,
+#marianas-inset .ol-zoom .ol-zoom-in,
+#marianas-inset .ol-zoom .ol-zoom-out {
+  font-size: 9px !important;
+  width: 16px !important;
+  height: 16px !important;
+  line-height: 16px !important;
+  margin-bottom: 2px !important;
+  border-radius: 4px !important;
+}
+
+#alaska-inset .ol-zoom .ol-zoom-in,
+#alaska-inset .ol-zoom .ol-zoom-out{
+  font-size: 9px !important;
+  width: 24px !important;
+  height: 24px !important;
+  line-height: 16px !important;
+  margin-bottom: 2px !important;
+  border-radius: 4px !important;
 }
 
 /* ── Responsive ── */
