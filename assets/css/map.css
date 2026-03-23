@@ -264,6 +264,7 @@ html, body {
   flex: 1;
   border-radius: 20px;
   overflow: hidden;
+  position: relative;
 }
 
 /* Style the OL attribution text */
