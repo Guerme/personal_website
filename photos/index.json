@@ -1,10 +1,22 @@
 {
   "national_parks": {
     "big_bend": [
-      "501.JPG",
-      "563.JPG",
-      "626.JPG",
-      "712.JPG"
+      "501.webp",
+      "563.webp",
+      "626.webp",
+      "712.webp"
+    ],
+    "carlsbad_caverns": [
+      "1325.webp",
+      "759.webp",
+      "774.webp",
+      "867.webp"
+    ],
+    "guadalupe_mountains": [
+      "1084.webp",
+      "1125.webp",
+      "1157.webp",
+      "1262.webp"
     ]
   },
   "national_monuments": {}
