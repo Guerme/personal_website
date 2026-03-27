@@ -410,8 +410,9 @@ function buildPopupHTML(feature) {
   `;
 }
 
-function showPopup(mapInstance, pixel) {
-  const mapRect = mapInstance.getTargetElement().getBoundingClientRect();
+function showPopup(mapInstance, pixel, constraintEl) {
+  const mapRect   = mapInstance.getTargetElement().getBoundingClientRect();
+  const boundRect = constraintEl ? constraintEl.getBoundingClientRect() : mapRect;
   const pw = popupEl.offsetWidth;
   const ph = popupEl.offsetHeight;
 
@@ -429,14 +430,14 @@ function showPopup(mapInstance, pixel) {
   ];
 
   const fits = ({ left, top }) =>
-    left >= mapRect.left &&
-    left + pw <= mapRect.right &&
-    top  >= mapRect.top  &&
-    top  + ph <= mapRect.bottom;
+    left >= boundRect.left &&
+    left + pw <= boundRect.right &&
+    top  >= boundRect.top  &&
+    top  + ph <= boundRect.bottom;
 
   const pos = candidates.find(fits) ?? {
-    left: Math.max(mapRect.left, Math.min(candidates[0].left, mapRect.right  - pw)),
-    top:  Math.max(mapRect.top,  Math.min(candidates[0].top,  mapRect.bottom - ph)),
+    left: Math.max(boundRect.left, Math.min(candidates[0].left, boundRect.right  - pw)),
+    top:  Math.max(boundRect.top,  Math.min(candidates[0].top,  boundRect.bottom - ph)),
   };
 
   popupEl.style.left = `${pos.left}px`;
@@ -454,7 +455,7 @@ function closePopup() {
   popupEl.style.pointerEvents = 'none';
 }
 
-function registerMapHandlers(mapInstance) {
+function registerMapHandlers(mapInstance, isInset = false) {
   mapInstance.on('pointermove', e => {
     const feature = mapInstance.forEachFeatureAtPixel(e.pixel, f => f);
     mapInstance.getTargetElement().style.cursor = feature ? 'pointer' : '';
@@ -469,7 +470,8 @@ function registerMapHandlers(mapInstance) {
       popupEl.innerHTML          = buildPopupHTML(feature);
       popupEl.style.opacity      = '1';
       popupEl.style.pointerEvents = 'auto';
-      requestAnimationFrame(() => showPopup(mapInstance, e.pixel));
+      const constraintEl = isInset ? main_map.getTargetElement() : null;
+      requestAnimationFrame(() => showPopup(mapInstance, e.pixel, constraintEl));
     } else {
       closePopup();
     }
@@ -477,11 +479,11 @@ function registerMapHandlers(mapInstance) {
 }
 
 registerMapHandlers(main_map);
-registerMapHandlers(alaska_map);
-registerMapHandlers(hawaii_map);
-registerMapHandlers(samoa_map);
-registerMapHandlers(marianas_map);
-registerMapHandlers(virgin_islands_map);
+registerMapHandlers(alaska_map,          true);
+registerMapHandlers(hawaii_map,          true);
+registerMapHandlers(samoa_map,           true);
+registerMapHandlers(marianas_map,        true);
+registerMapHandlers(virgin_islands_map,  true);
 
 // ── Legend ──
 const legend = document.createElement('div');
@@ -610,6 +612,43 @@ function toggleMonFilter(which) {
   if (alaska_map) alaska_map.render();
   if (hawaii_map) hawaii_map.render();
 }
+
+// ── Reset Extents ──
+const HOME_EXTENTS = [
+  [main_map,           [-100,    38    ], 5.2],
+  [alaska_map,         [-153,    61    ], 3.4],
+  [hawaii_map,         [-165,    20    ], 3.9],
+  [samoa_map,          [-169.7, -14.4  ], 7  ],
+  [marianas_map,       [ 145,    20    ], 7  ],
+  [virgin_islands_map, [-64.7,   18.05 ], 7  ],
+];
+
+function addResetButton(mapInstance, center, zoom) {
+  mapInstance.once('rendercomplete', () => {
+    const zoomEl = mapInstance.getTargetElement().querySelector('.ol-zoom');
+    if (!zoomEl) return;
+    const zoomIn = zoomEl.querySelector('.ol-zoom-in');
+    if (!zoomIn) return;
+
+    const btn = document.createElement('button');
+    btn.className = 'ol-reset-extent';
+    btn.title = 'Reset to original extent';
+    btn.innerHTML = '↻';
+    btn.type = 'button';
+    btn.addEventListener('click', e => {
+      e.preventDefault();
+      mapInstance.getView().animate({ center: ol.proj.fromLonLat(center), zoom, duration: 400 });
+    });
+
+    const row = document.createElement('div');
+    row.style.cssText = 'display: flex; flex-direction: row; gap: 4px;';
+    zoomIn.parentNode.insertBefore(row, zoomIn);
+    row.appendChild(zoomIn);
+    row.appendChild(btn);
+  });
+}
+
+HOME_EXTENTS.forEach(([m, center, zoom]) => addResetButton(m, center, zoom));
 
 // ── Render ──
 vectorSource.on('change', () => { alaska_map.render(); hawaii_map.render(); samoa_map.render(); marianas_map.render(); virgin_islands_map.render(); });
