@@ -369,6 +369,134 @@ fetch('assets/constants.json')
     ]);
   });
 
+let photoIndex = {};
+fetch('photos/index.json')
+  .then(r => r.json())
+  .then(idx => { photoIndex = idx; })
+  .catch(() => {});
+
+// ── Photo helpers ──
+function nameToFolderSlug(name) {
+  return name.toLowerCase().replace(/ /g, '_');
+}
+
+// ── Lightbox ──
+let lightboxPhotos = [];
+let lightboxIndex  = 0;
+
+const lightboxEl = document.createElement('div');
+lightboxEl.style.cssText = `
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.78);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+`;
+document.body.appendChild(lightboxEl);
+
+const lightboxCloseBtn = document.createElement('button');
+lightboxCloseBtn.textContent = '✕';
+lightboxCloseBtn.style.cssText = `
+  position: absolute;
+  top: 16px;
+  right: 20px;
+  background: none;
+  border: none;
+  color: rgba(255,255,255,0.85);
+  font-size: 22px;
+  cursor: pointer;
+  line-height: 1;
+  padding: 0;
+`;
+lightboxEl.appendChild(lightboxCloseBtn);
+
+// Row: prev button — image — next button
+const lightboxRow = document.createElement('div');
+lightboxRow.style.cssText = `display: flex; align-items: center; gap: 16px;`;
+lightboxEl.appendChild(lightboxRow);
+
+const navBtnCSS = `
+  background: rgba(255,255,255,0.15);
+  border: 1px solid rgba(255,255,255,0.3);
+  border-radius: 50%;
+  color: white;
+  font-size: 28px;
+  width: 44px;
+  height: 44px;
+  cursor: pointer;
+  line-height: 1;
+  padding: 0;
+  flex-shrink: 0;
+`;
+
+const lightboxPrevBtn = document.createElement('button');
+lightboxPrevBtn.innerHTML = '&#8249;';
+lightboxPrevBtn.style.cssText = navBtnCSS;
+lightboxRow.appendChild(lightboxPrevBtn);
+
+const lightboxImg = document.createElement('img');
+lightboxImg.style.cssText = `
+  max-width: 75vw;
+  max-height: 75vh;
+  object-fit: contain;
+  border-radius: 8px;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.6);
+`;
+lightboxRow.appendChild(lightboxImg);
+
+const lightboxNextBtn = document.createElement('button');
+lightboxNextBtn.innerHTML = '&#8250;';
+lightboxNextBtn.style.cssText = navBtnCSS;
+lightboxRow.appendChild(lightboxNextBtn);
+
+const lightboxCounter = document.createElement('span');
+lightboxCounter.style.cssText = `
+  margin-top: 10px;
+  color: rgba(255,255,255,0.75);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+`;
+lightboxEl.appendChild(lightboxCounter);
+
+function updateLightboxImage() {
+  lightboxImg.src = lightboxPhotos[lightboxIndex];
+  const multi = lightboxPhotos.length > 1;
+  lightboxPrevBtn.style.display    = multi ? '' : 'none';
+  lightboxNextBtn.style.display    = multi ? '' : 'none';
+  lightboxCounter.style.display    = multi ? '' : 'none';
+  if (multi) lightboxCounter.textContent = `${lightboxIndex + 1} / ${lightboxPhotos.length}`;
+}
+
+function openLightbox(photos, index) {
+  lightboxPhotos = photos;
+  lightboxIndex  = index;
+  updateLightboxImage();
+  lightboxEl.style.opacity       = '1';
+  lightboxEl.style.pointerEvents = 'auto';
+}
+
+function closeLightbox() {
+  lightboxEl.style.opacity       = '0';
+  lightboxEl.style.pointerEvents = 'none';
+}
+
+lightboxPrevBtn.addEventListener('click', () => {
+  lightboxIndex = (lightboxIndex - 1 + lightboxPhotos.length) % lightboxPhotos.length;
+  updateLightboxImage();
+});
+lightboxNextBtn.addEventListener('click', () => {
+  lightboxIndex = (lightboxIndex + 1) % lightboxPhotos.length;
+  updateLightboxImage();
+});
+lightboxCloseBtn.addEventListener('click', closeLightbox);
+lightboxEl.addEventListener('click', e => { if (e.target === lightboxEl) closeLightbox(); });
+
 // ── Popup ──
 const POPUP_GAP = 5;   // px gap between icon edge and popup — adjust here
 const ICON_SIZE = 20;  // px, must match icon width/height set in npsStyle — adjust here
@@ -394,19 +522,47 @@ document.body.appendChild(popupEl);
 popupEl.addEventListener('click', e => e.stopPropagation());
 
 function buildPopupHTML(feature) {
-  const label  = feature.get('type') === 'park' ? 'National Park' : 'National Monument';
-  const status = feature.get('visited') ? '✓ Visited' : 'Not yet visited';
-  const color  = feature.get('visited')
+  const label   = feature.get('type') === 'park' ? 'National Park' : 'National Monument';
+  const status  = feature.get('visited') ? '✓ Visited' : 'Not yet visited';
+  const color   = feature.get('visited')
     ? (feature.get('type') === 'park' ? '#c97d4e' : '#6b9ab8')
     : '#999';
-  const website = feature.get('website');
+  const website    = feature.get('website');
+  const typeFolder = feature.get('type') === 'park' ? 'national_parks' : 'national_monuments';
+  const slug       = nameToFolderSlug(feature.get('name'));
+  const photos     = (photoIndex[typeFolder] && photoIndex[typeFolder][slug]) || [];
+
   const websiteLine = website
     ? `<br><a href="${website}" target="_blank" rel="noopener" style="font-size:11px;color:#5a8fa8;text-decoration:none;">Website: ${website}</a>`
     : '';
+
+  if (photos.length > 0) {
+    popupEl.style.whiteSpace = 'normal';
+    popupEl.style.width      = '260px';
+  } else {
+    popupEl.style.whiteSpace = 'nowrap';
+    popupEl.style.width      = '';
+  }
+
+  const srcs = photos.map(f => `photos/${typeFolder}/${slug}/${f}`);
+  const srcsJSON = JSON.stringify(srcs);
+  const thumbsHTML = srcs.map((src, i) =>
+    `<img src="${src}" onclick="openLightbox(${srcsJSON.replace(/"/g, '&quot;')},${i})"
+          style="width:calc(50% - 2px);aspect-ratio:1;object-fit:cover;border-radius:4px;cursor:pointer;"
+          alt="">`
+  ).join('');
+
+  const photosSection = photos.length > 0 ? `
+    <div style="margin-top:8px;border-top:1px solid #eee;padding-top:6px;">
+      <span style="font-size:11px;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:0.05em;">Photos</span>
+      <div style="display:flex;flex-wrap:wrap;gap:4px;margin-top:4px;">${thumbsHTML}</div>
+    </div>` : '';
+
   return `
     <button onclick="closePopup()" style="position:absolute;top:4px;right:6px;background:none;border:none;cursor:pointer;font-size:14px;color:#999;line-height:1;padding:0;">✕</button>
     <strong>${feature.get('name')} ${label}</strong><br>
     <span style="color:${color};font-size:11px">${status}</span>${websiteLine}
+    ${photosSection}
   `;
 }
 
