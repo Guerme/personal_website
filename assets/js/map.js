@@ -375,14 +375,37 @@ fetch('photos/index.json')
   .then(idx => { photoIndex = idx; })
   .catch(() => {});
 
+// ── Visited date helpers ──
+function isDateVisited(val) {
+  return typeof val === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(val);
+}
+
+function formatVisitedDate(dateStr) {
+  const [y, m, d] = dateStr.split('-').map(Number);
+  return new Date(y, m - 1, d).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+}
+
 // ── Photo helpers ──
 function nameToFolderSlug(name) {
   return name.toLowerCase().replace(/ /g, '_');
 }
 
+let popupPhotoData = []; // [{src, w, h}, ...] sorted widest-first, read by openLightbox
+
+function loadAndSortByWidth(srcs) {
+  if (srcs.length === 0) return Promise.resolve([]);
+  return Promise.all(srcs.map(src => new Promise(resolve => {
+    const img = new Image();
+    img.onload  = () => resolve({ src, w: img.naturalWidth, h: img.naturalHeight });
+    img.onerror = () => resolve({ src, w: 0, h: 0 });
+    img.src = src;
+  }))).then(data => data.sort((a, b) => b.w - a.w));
+}
+
 // ── Lightbox ──
-let lightboxPhotos = [];
-let lightboxIndex  = 0;
+let lightboxPhotos     = [];
+let lightboxIndex      = 0;
+let lightboxFixedWidth = 0;
 
 const lightboxEl = document.createElement('div');
 lightboxEl.style.cssText = `
@@ -445,6 +468,7 @@ lightboxImg.style.cssText = `
   max-width: 75vw;
   max-height: 75vh;
   object-fit: contain;
+  background: #000;
   border-radius: 8px;
   box-shadow: 0 8px 40px rgba(0,0,0,0.6);
 `;
@@ -465,7 +489,7 @@ lightboxCounter.style.cssText = `
 lightboxEl.appendChild(lightboxCounter);
 
 function updateLightboxImage() {
-  lightboxImg.src = lightboxPhotos[lightboxIndex];
+  lightboxImg.src = lightboxPhotos[lightboxIndex].src;
   const multi = lightboxPhotos.length > 1;
   lightboxPrevBtn.style.display    = multi ? '' : 'none';
   lightboxNextBtn.style.display    = multi ? '' : 'none';
@@ -473,9 +497,24 @@ function updateLightboxImage() {
   if (multi) lightboxCounter.textContent = `${lightboxIndex + 1} / ${lightboxPhotos.length}`;
 }
 
-function openLightbox(photos, index) {
-  lightboxPhotos = photos;
+function openLightbox(index) {
+  lightboxPhotos = popupPhotoData;
   lightboxIndex  = index;
+
+  // Pin the image width to the widest photo's display size so the arrows
+  // never shift position as you cycle through photos of different widths.
+  const first = lightboxPhotos[0];
+  if (first && first.w > 0 && first.h > 0) {
+    const scale        = Math.min((window.innerWidth * 0.75) / first.w,
+                                  (window.innerHeight * 0.75) / first.h);
+    lightboxFixedWidth         = Math.round(first.w * scale);
+    lightboxImg.style.width    = lightboxFixedWidth + 'px';
+    lightboxImg.style.maxWidth = 'none';
+  } else {
+    lightboxImg.style.width    = '';
+    lightboxImg.style.maxWidth = '75vw';
+  }
+
   updateLightboxImage();
   lightboxEl.style.opacity       = '1';
   lightboxEl.style.pointerEvents = 'auto';
@@ -521,22 +560,21 @@ popupEl.style.cssText = `
 document.body.appendChild(popupEl);
 popupEl.addEventListener('click', e => e.stopPropagation());
 
-function buildPopupHTML(feature) {
-  const label   = feature.get('type') === 'park' ? 'National Park' : 'National Monument';
-  const status  = feature.get('visited') ? '✓ Visited' : 'Not yet visited';
-  const color   = feature.get('visited')
-    ? (feature.get('type') === 'park' ? '#c97d4e' : '#6b9ab8')
-    : '#999';
+function buildPopupHTML(feature, sortedPhotos) {
+  const label      = feature.get('type') === 'park' ? 'National Park' : 'National Monument';
+  const visitedVal = feature.get('visited');
+  const hasDate    = isDateVisited(visitedVal);
+  const status     = hasDate ? `Date Visited: ${formatVisitedDate(visitedVal)}` : 'Not Yet Visited';
+  const color      = hasDate ? '#5a8fa8' : '#c47878';
   const website    = feature.get('website');
-  const typeFolder = feature.get('type') === 'park' ? 'national_parks' : 'national_monuments';
-  const slug       = nameToFolderSlug(feature.get('name'));
-  const photos     = (photoIndex[typeFolder] && photoIndex[typeFolder][slug]) || [];
 
   const websiteLine = website
     ? `<br><a href="${website}" target="_blank" rel="noopener" style="font-size:11px;color:#5a8fa8;text-decoration:none;">Website: ${website}</a>`
     : '';
 
-  if (photos.length > 0) {
+  popupPhotoData = sortedPhotos;
+
+  if (sortedPhotos.length > 0) {
     popupEl.style.whiteSpace = 'normal';
     popupEl.style.width      = '260px';
   } else {
@@ -544,15 +582,13 @@ function buildPopupHTML(feature) {
     popupEl.style.width      = '';
   }
 
-  const srcs = photos.map(f => `photos/${typeFolder}/${slug}/${f}`);
-  const srcsJSON = JSON.stringify(srcs);
-  const thumbsHTML = srcs.map((src, i) =>
-    `<img src="${src}" onclick="openLightbox(${srcsJSON.replace(/"/g, '&quot;')},${i})"
+  const thumbsHTML = sortedPhotos.map(({ src }, i) =>
+    `<img src="${src}" onclick="openLightbox(${i})"
           style="width:calc(50% - 2px);aspect-ratio:1;object-fit:cover;border-radius:4px;cursor:pointer;"
           alt="">`
   ).join('');
 
-  const photosSection = photos.length > 0 ? `
+  const photosSection = sortedPhotos.length > 0 ? `
     <div style="margin-top:8px;border-top:1px solid #eee;padding-top:6px;">
       <span style="font-size:11px;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:0.05em;">Photos</span>
       <div style="display:flex;flex-wrap:wrap;gap:4px;margin-top:4px;">${thumbsHTML}</div>
@@ -617,13 +653,18 @@ function registerMapHandlers(mapInstance, isInset = false) {
     mapInstance.getTargetElement().style.cursor = feature ? 'pointer' : '';
   });
 
-  mapInstance.on('singleclick', e => {
+  mapInstance.on('singleclick', async e => {
     const feature = mapInstance.forEachFeatureAtPixel(e.pixel, f => f);
     if (feature) {
       if (selectedFeature && selectedFeature !== feature) closePopup();
       selectedFeature = feature;
       feature.setStyle(getHighlightStyle(feature));
-      popupEl.innerHTML          = buildPopupHTML(feature);
+      const typeFolder   = feature.get('type') === 'park' ? 'national_parks' : 'national_monuments';
+      const slug         = nameToFolderSlug(feature.get('name'));
+      const files        = (photoIndex[typeFolder] && photoIndex[typeFolder][slug]) || [];
+      const srcs         = files.map(f => `photos/${typeFolder}/${slug}/${f}`);
+      const sortedPhotos = await loadAndSortByWidth(srcs);
+      popupEl.innerHTML          = buildPopupHTML(feature, sortedPhotos);
       popupEl.style.opacity      = '1';
       popupEl.style.pointerEvents = 'auto';
       const constraintEl = isInset ? main_map.getTargetElement() : null;

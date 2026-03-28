@@ -17,9 +17,11 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "photos": "node convert-photos.js",
-    "index": "node generate-photo-index.js"
+    "index": "node generate-photo-index.js",
+    "dates": "node get-photo-dates.js"
   },
   "devDependencies": {
+    "exifr": "^7.1.3",
     "sharp": "^0.33.0"
   }
 }

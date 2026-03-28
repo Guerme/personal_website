@@ -1,5 +1,11 @@
 {
   "national_parks": {
+    "acadia": [
+      "Pictures From May to October, 2005 006.webp",
+      "Pictures From May to October, 2005 007.webp",
+      "Summer 2008 008.webp",
+      "Summer 2008 031.webp"
+    ],
     "big_bend": [
       "501.webp",
       "563.webp",
@@ -12,12 +18,84 @@
       "774.webp",
       "867.webp"
     ],
+    "crater_lake": [
+      "DSCN7417.webp",
+      "DSCN7444.webp",
+      "DSCN7481.webp",
+      "DSCN7607.webp"
+    ],
+    "grand_canyon": [
+      "Grand Canyon 005.webp",
+      "Grand Canyon and Sedona 036.webp",
+      "Grand Canyon and Sedona 050.webp",
+      "Grand Canyon and Sedona 057.webp"
+    ],
     "guadalupe_mountains": [
       "1084.webp",
       "1125.webp",
       "1157.webp",
       "1262.webp"
+    ],
+    "lassen_volcanic": [
+      "DSCN7798.webp",
+      "DSCN7856.webp",
+      "DSCN7861.webp",
+      "DSCN7905.webp"
+    ],
+    "olympic": [
+      "Summer Fun Around Bellingham 064.webp"
+    ],
+    "redwood": [
+      "DSCN8115.webp",
+      "DSCN8169.webp",
+      "DSCN8182.webp",
+      "DSCN8199.webp"
+    ],
+    "yosemite": [
+      "Yosemite and San Francisco 001.webp",
+      "Yosemite and San Francisco 040.webp",
+      "Yosemite and San Francisco 045.webp",
+      "Yosemite, Monterey and San Francisco 2007 035.webp"
+    ],
+    "zion": [
+      "Spring Break 2008 045.webp",
+      "Spring Break 2008 056.webp",
+      "Spring Break 2008 069.webp",
+      "Spring Break 2008 070.webp"
     ]
   },
-  "national_monuments": {}
+  "national_monuments": {
+    "cabrillo": [
+      "Trip to So. California Coast 012.webp",
+      "Trip to So. California Coast 017.webp",
+      "Trip to So. California Coast 021.webp",
+      "Trip to So. California Coast 023.webp"
+    ],
+    "colorado": [
+      "DSCN8379.webp",
+      "DSCN8400.webp",
+      "DSCN8406.webp",
+      "DSCN8467.webp"
+    ],
+    "lava_beds": [
+      "DSCN7656.webp",
+      "DSCN7674.webp",
+      "DSCN7721.webp",
+      "DSCN7735.webp"
+    ],
+    "newberry_volcanic": [
+      "DSCN7355.webp",
+      "DSCN7358.webp",
+      "DSCN7364.webp",
+      "DSCN7374.webp"
+    ],
+    "san_juan_islands": [
+      "Summer Fun Around Bellingham 031.webp",
+      "Summer Fun Around Bellingham 034.webp"
+    ],
+    "sunset_crater_volcano": [
+      "Picture 092.webp",
+      "Picture 096.webp"
+    ]
+  }
 }
