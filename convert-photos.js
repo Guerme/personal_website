@@ -23,6 +23,32 @@ async function convertAll() {
   let converted = 0;
   let skipped   = 0;
 
+  // Convert root-level photos directly in photos/
+  for (const file of fs.readdirSync(photosDir)) {
+    const filePath = path.join(photosDir, file);
+    if (!fs.statSync(filePath).isFile()) continue;
+
+    if (WEBP_EXTENSION.test(file)) { skipped++; continue; }
+    if (!PHOTO_EXTENSIONS.test(file)) continue;
+
+    const outName = file.replace(/\.[^.]+$/, '.webp');
+    const outPath = path.join(photosDir, outName);
+
+    try {
+      await sharp(filePath)
+        .rotate()
+        .resize(MAX_DIMENSION, MAX_DIMENSION, { fit: 'inside', withoutEnlargement: true })
+        .webp({ quality: QUALITY })
+        .toFile(outPath);
+
+      fs.unlinkSync(filePath);
+      console.log(`  converted: ${file} → ${outName}`);
+      converted++;
+    } catch (err) {
+      console.error(`  ERROR converting ${file}:`, err.message);
+    }
+  }
+
   for (const category of categories) {
     const categoryDir = path.join(photosDir, category);
     if (!fs.existsSync(categoryDir)) continue;

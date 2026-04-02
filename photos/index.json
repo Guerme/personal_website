@@ -6,11 +6,47 @@
       "Summer 2008 008.webp",
       "Summer 2008 031.webp"
     ],
+    "american_samoa": [
+      "DSCN1503.webp",
+      "DSCN1520.webp",
+      "DSCN1646.webp",
+      "DSCN1683.webp"
+    ],
+    "arches": [
+      "054.webp",
+      "055.webp",
+      "059.webp",
+      "065.webp"
+    ],
+    "badlands": [
+      "008.webp",
+      "010.webp",
+      "055.webp",
+      "072.webp"
+    ],
     "big_bend": [
       "501.webp",
       "563.webp",
       "626.webp",
       "712.webp"
+    ],
+    "black_canyon_of_the_gunnison": [
+      "DSCN6825.webp",
+      "DSCN6893.webp",
+      "DSCN6908.webp",
+      "DSCN6920.webp"
+    ],
+    "canyonlands": [
+      "021.webp",
+      "024.webp",
+      "033.webp",
+      "034.webp"
+    ],
+    "capitol_reef": [
+      "DSCN5316.webp",
+      "DSCN5322.webp",
+      "DSCN5336.webp",
+      "DSCN5352.webp"
     ],
     "carlsbad_caverns": [
       "1325.webp",
@@ -24,11 +60,47 @@
       "DSCN7481.webp",
       "DSCN7607.webp"
     ],
+    "death_valley": [
+      "DSCN5455.webp",
+      "DSCN5483.webp",
+      "DSCN5492.webp",
+      "DSCN5595.webp"
+    ],
+    "glacier": [
+      "050.webp",
+      "20200820_111705_IMG_3060.webp",
+      "20200820_191914_IMG_3078.webp",
+      "20200820_201419_IMG_3090.webp"
+    ],
     "grand_canyon": [
       "Grand Canyon 005.webp",
       "Grand Canyon and Sedona 036.webp",
       "Grand Canyon and Sedona 050.webp",
       "Grand Canyon and Sedona 057.webp"
+    ],
+    "grand_teton": [
+      "022.webp",
+      "027.webp",
+      "051.webp",
+      "Jackson and Colorado 024.webp"
+    ],
+    "great_basin": [
+      "IMG_8115.webp",
+      "IMG_8134.webp",
+      "IMG_8144.webp",
+      "IMG_8148.webp"
+    ],
+    "great_sand_dunes": [
+      "DSCN2885.webp",
+      "DSCN2911.webp",
+      "DSCN2919.webp",
+      "DSCN2927.webp"
+    ],
+    "great_smoky_mountains": [
+      "DSC03943.webp",
+      "DSC03968.webp",
+      "DSC03969.webp",
+      "DSC03999.webp"
     ],
     "guadalupe_mountains": [
       "1084.webp",
@@ -36,20 +108,107 @@
       "1157.webp",
       "1262.webp"
     ],
+    "hot_springs": [
+      "Heading West May 2010 003.webp",
+      "Heading West May 2010 007.webp",
+      "Heading West May 2010 019.webp",
+      "Heading West May 2010 027.webp"
+    ],
+    "joshua_tree": [
+      "20250311_075839_IMG_1011.webp",
+      "DSCN6071.webp",
+      "IMG_0604.webp",
+      "IMG_0628.webp"
+    ],
     "lassen_volcanic": [
-      "DSCN7798.webp",
+      "20251008_135922_IMG_1977.webp",
       "DSCN7856.webp",
       "DSCN7861.webp",
       "DSCN7905.webp"
     ],
+    "mammoth_cave": [
+      "DSCN0542.webp",
+      "DSCN0555.webp",
+      "DSCN0567.webp",
+      "DSCN0568.webp"
+    ],
+    "mesa_verde": [
+      "DSCN3255.webp",
+      "DSCN3330.webp",
+      "DSCN3401.webp",
+      "DSCN3462.webp"
+    ],
+    "mount_rainier": [
+      "303.webp",
+      "321.webp",
+      "344.webp",
+      "345.webp"
+    ],
+    "north_cascades": [
+      "246.webp",
+      "264.webp",
+      "266.webp",
+      "267.webp"
+    ],
     "olympic": [
+      "20251003_132600_IMG_1823.webp",
+      "20251004_132118_IMG_1885.webp",
+      "20251004_180155_IMG_1920.webp",
       "Summer Fun Around Bellingham 064.webp"
+    ],
+    "petrified_forest": [
+      "024.webp",
+      "026.webp",
+      "028.webp",
+      "031.webp"
+    ],
+    "pinnacles": [
+      "DSCN4942.webp",
+      "DSCN4972.webp",
+      "DSCN4982.webp",
+      "DSCN4986.webp"
     ],
     "redwood": [
       "DSCN8115.webp",
       "DSCN8169.webp",
       "DSCN8182.webp",
       "DSCN8199.webp"
+    ],
+    "saguaro": [
+      "DSCN0668.webp",
+      "DSCN0676.webp",
+      "DSCN0746.webp",
+      "DSCN0751.webp"
+    ],
+    "theodore_roosevelt": [
+      "DSCN1061.webp",
+      "DSCN1244.webp",
+      "DSCN1282.webp",
+      "DSCN1317.webp"
+    ],
+    "white_sands": [
+      "DSCN8553.webp",
+      "DSCN8557.webp",
+      "DSCN8559.webp",
+      "DSCN8565.webp"
+    ],
+    "wind_cave": [
+      "017.webp",
+      "019.webp",
+      "023.webp",
+      "029.webp"
+    ],
+    "wrangell-st._elias": [
+      "DSCN4765.webp",
+      "DSCN4795.webp",
+      "DSCN4802.webp",
+      "DSCN4806.webp"
+    ],
+    "yellowstone": [
+      "008.webp",
+      "012.webp",
+      "020.webp",
+      "047.webp"
     ],
     "yosemite": [
       "Yosemite and San Francisco 001.webp",
@@ -65,11 +224,107 @@
     ]
   },
   "national_monuments": {
+    "african_burial_ground": [
+      "20240609_113155_IMG_0135.webp",
+      "20240609_113400_IMG_0140.webp",
+      "20240609_113420_IMG_0141.webp",
+      "20240609_113536_IMG_0142.webp"
+    ],
+    "agate_fossil_beds": [
+      "DSCN2509.webp",
+      "DSCN2528.webp",
+      "DSCN2535.webp",
+      "DSCN2545.webp"
+    ],
+    "agua_fria": [
+      "DSCN0828.webp",
+      "DSCN0832.webp",
+      "DSCN0835.webp",
+      "DSCN0839.webp"
+    ],
+    "avi_kwa_ame": [
+      "20250512_164843_IMG_1155.webp",
+      "20250512_165433_IMG_1157.webp",
+      "20250512_165653_IMG_1158.webp",
+      "20250512_172008_IMG_1161.webp"
+    ],
+    "aztec_ruins": [
+      "DSCN3082.webp",
+      "DSCN3091.webp",
+      "DSCN3118.webp",
+      "DSCN3135.webp"
+    ],
+    "bears_ears": [
+      "DSCN7114.webp",
+      "DSCN7116.webp",
+      "DSCN7117.webp",
+      "DSCN7122.webp"
+    ],
+    "berryessa_snow_mountain": [
+      "IMG_7867.webp",
+      "IMG_7870.webp",
+      "IMG_7873.webp",
+      "IMG_7880.webp"
+    ],
     "cabrillo": [
       "Trip to So. California Coast 012.webp",
       "Trip to So. California Coast 017.webp",
       "Trip to So. California Coast 021.webp",
       "Trip to So. California Coast 023.webp"
+    ],
+    "california_coastal": [
+      "DSCN4999.webp",
+      "DSCN5000.webp",
+      "DSCN5001.webp",
+      "DSCN5003.webp"
+    ],
+    "canyons_of_the_ancients": [
+      "DSCN6982.webp",
+      "DSCN6991.webp",
+      "DSCN6996.webp",
+      "DSCN7028.webp"
+    ],
+    "canyon_de_chelly": [
+      "DSCN3583.webp",
+      "DSCN3638.webp",
+      "DSCN3648.webp",
+      "DSCN3712.webp"
+    ],
+    "capulin_volcano": [
+      "DSCN9873.webp",
+      "DSCN9879.webp",
+      "DSCN9882.webp",
+      "DSCN9886.webp"
+    ],
+    "casa_grande_ruins": [
+      "DSCN0612.webp",
+      "DSCN0618.webp",
+      "DSCN0630.webp",
+      "DSCN0635.webp"
+    ],
+    "cascade-siskiyou": [
+      "DSCN1217.webp",
+      "DSCN1236.webp",
+      "DSCN1269.webp",
+      "DSCN1283.webp"
+    ],
+    "castle_clinton": [
+      "20240609_104933_IMG_0077.webp",
+      "20240609_105353_IMG_0083.webp",
+      "20240609_105514_IMG_0088.webp",
+      "20240609_105925_IMG_0095.webp"
+    ],
+    "castle_mountains": [
+      "20250514_144510_IMG_1267.webp",
+      "20250514_144516_IMG_1268.webp",
+      "20250514_145803_IMG_1272.webp",
+      "20250514_153302_IMG_1278.webp"
+    ],
+    "chiricahua": [
+      "DSCN0969.webp",
+      "DSCN0977.webp",
+      "DSCN1000.webp",
+      "DSCN1024.webp"
     ],
     "colorado": [
       "DSCN8379.webp",
@@ -77,11 +332,137 @@
       "DSCN8406.webp",
       "DSCN8467.webp"
     ],
+    "craters_of_the_moon": [
+      "024.webp",
+      "035.webp",
+      "058.webp",
+      "061.webp"
+    ],
+    "devils_postpile": [
+      "IMG_8002.webp",
+      "IMG_8014.webp",
+      "IMG_8021.webp",
+      "IMG_8035.webp"
+    ],
+    "devils_tower": [
+      "003.webp",
+      "053.webp",
+      "059.webp",
+      "065.webp"
+    ],
+    "dinosaur": [
+      "022.webp",
+      "DSCN6713.webp",
+      "DSCN7787.webp",
+      "DSCN7867.webp"
+    ],
+    "el_malpais": [
+      "DSCN9057.webp",
+      "DSCN9060.webp",
+      "DSCN9065.webp",
+      "DSCN9068.webp"
+    ],
+    "el_morro": [
+      "DSCN8966.webp",
+      "DSCN9022.webp",
+      "DSCN9039.webp",
+      "DSCN9045.webp"
+    ],
+    "florissant_fossil_beds": [
+      "DSCN2728.webp",
+      "DSCN2737.webp",
+      "DSCN2743.webp",
+      "DSCN2758.webp"
+    ],
+    "fort_ord": [
+      "DSCN5014.webp",
+      "DSCN5017.webp",
+      "DSCN5021.webp",
+      "DSCN5025.webp"
+    ],
+    "fossil_butte": [
+      "DSCN9730.webp",
+      "DSCN9736.webp",
+      "DSCN9741.webp",
+      "DSCN9749.webp"
+    ],
+    "gila_cliff_dwellings": [
+      "DSCN8802.webp",
+      "DSCN8804.webp",
+      "DSCN8831.webp",
+      "DSCN8847.webp"
+    ],
+    "gold_butte": [
+      "20250516_115454_IMG_1340.webp",
+      "20250516_123556_IMG_1348.webp",
+      "20250516_130124_IMG_1357.webp",
+      "20250516_130800_IMG_1362.webp"
+    ],
+    "governors_island": [
+      "20240609_090930_IMG_0016.webp",
+      "20240609_091213_IMG_0019.webp",
+      "20240609_094037_IMG_0028.webp",
+      "20240609_095704_IMG_0046.webp"
+    ],
+    "hagerman_fossil_beds": [
+      "IMG_8154.webp",
+      "IMG_8155.webp",
+      "IMG_8157.webp",
+      "IMG_8158.webp"
+    ],
+    "hovenweep": [
+      "DSCN7044.webp",
+      "DSCN7066.webp",
+      "DSCN7068.webp",
+      "DSCN7078.webp"
+    ],
+    "ironwood_forest": [
+      "DSCN0642.webp",
+      "DSCN0648.webp",
+      "DSCN0657.webp",
+      "DSCN0658.webp"
+    ],
+    "john_day_fossil_beds": [
+      "DSCN1335.webp",
+      "DSCN1354.webp",
+      "DSCN1357.webp",
+      "DSCN1360.webp"
+    ],
+    "kasha-katuwe_tent_rocks": [
+      "DSCN0868.webp",
+      "DSCN0875.webp",
+      "DSCN0878.webp",
+      "DSCN0902.webp"
+    ],
     "lava_beds": [
       "DSCN7656.webp",
       "DSCN7674.webp",
       "DSCN7721.webp",
       "DSCN7735.webp"
+    ],
+    "mojave_trails": [
+      "20250513_103652_IMG_1169.webp",
+      "20250513_104617_IMG_1184.webp",
+      "20250513_132140_IMG_1205.webp",
+      "20250513_133321_IMG_1212.webp"
+    ],
+    "montezuma_castle": [
+      "DSCN3777.webp",
+      "DSCN3801.webp",
+      "DSCN3827.webp",
+      "DSCN3838.webp"
+    ],
+    "muir_woods": [
+      "IMG_8353.webp",
+      "IMG_8361.webp",
+      "IMG_8368.webp",
+      "IMG_8371.webp"
+    ],
+    "natural_bridges": [
+      "DSCN7089.webp",
+      "DSCN7126.webp",
+      "DSCN7226.webp",
+      "DSCN7237.webp"
     ],
     "newberry_volcanic": [
       "DSCN7355.webp",
@@ -89,13 +470,88 @@
       "DSCN7364.webp",
       "DSCN7374.webp"
     ],
+    "organ_mountains-desert_peaks": [
+      "DSCN8641.webp",
+      "DSCN8683.webp",
+      "DSCN8723.webp",
+      "DSCN8734.webp"
+    ],
+    "organ_pipe_cactus": [
+      "DSCN0765.webp",
+      "DSCN0769.webp",
+      "DSCN0816.webp",
+      "DSCN0825.webp"
+    ],
+    "petroglyph": [
+      "DSCN0853.webp",
+      "DSCN0856.webp",
+      "DSCN0857.webp",
+      "DSCN0863.webp"
+    ],
+    "pipe_spring": [
+      "DSCN5412.webp",
+      "DSCN5413.webp",
+      "DSCN5414.webp"
+    ],
+    "pompeys_pillar": [
+      "20211225_124754_IMG_5864.webp",
+      "20211225_125821_IMG_5868.webp",
+      "20211225_130242_IMG_5877.webp",
+      "20211225_130302_IMG_5878.webp"
+    ],
+    "rio_grande_del_norte": [
+      "DSCN9109.webp",
+      "DSCN9117.webp",
+      "DSCN9133.webp",
+      "DSCN9136.webp"
+    ],
     "san_juan_islands": [
-      "Summer Fun Around Bellingham 031.webp",
+      "20220914_120136_IMG_7089.webp",
+      "20220914_125639_IMG_7094.webp",
+      "20220914_132458_IMG_7100.webp",
       "Summer Fun Around Bellingham 034.webp"
+    ],
+    "scotts_bluff": [
+      "DSCN2576.webp",
+      "DSCN2586.webp",
+      "DSCN2604.webp",
+      "DSCN2607.webp"
     ],
     "sunset_crater_volcano": [
       "Picture 092.webp",
-      "Picture 096.webp"
+      "Picture 094.webp",
+      "Picture 096.webp",
+      "Picture 099.webp"
+    ],
+    "tonto": [
+      "DSCN1069.webp",
+      "DSCN1082.webp",
+      "DSCN1086.webp",
+      "DSCN1094.webp"
+    ],
+    "tule_lake": [
+      "IMG_7837.webp",
+      "IMG_7840.webp",
+      "IMG_7841.webp",
+      "IMG_7842.webp"
+    ],
+    "tule_springs_fossil_beds": [
+      "20250517_144402_IMG_1368.webp",
+      "20250517_144456_IMG_1369.webp",
+      "20250517_155113_IMG_1374.webp",
+      "20250517_155125_IMG_1376.webp"
+    ],
+    "walnut_canyon": [
+      "DSCN3880.webp",
+      "DSCN3895.webp",
+      "DSCN3906.webp",
+      "DSCN3920.webp"
+    ],
+    "yucca_house": [
+      "DSCN6944.webp",
+      "DSCN6949.webp",
+      "DSCN6951.webp",
+      "DSCN6953.webp"
     ]
   }
 }

@@ -687,7 +687,7 @@ const legend = document.createElement('div');
 legend.className = 'map-legend';
 legend.innerHTML = `
   <div class="legend-handle" id="legend-handle">
-    <span class="legend-title">Legend</span>
+    <span class="legend-title">Map Legend</span>
     <span class="legend-drag-hint">⠿</span>
   </div>
   <div class="legend-filter-row">

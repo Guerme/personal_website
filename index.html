@@ -5,104 +5,42 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Winn</title>
   <link rel="stylesheet" href="assets/css/style.css" />
-  <link rel="stylesheet" href="assets/css/map.css" />
+  <link rel="preload" as="font" type="font/ttf" href="assets/css/Cloudsky.ttf" crossorigin />
+  <link rel="preload" as="image" href="photos/homepage_banner.webp" fetchpriority="high" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
 </head>
-<body>
+<body class="home-page">
+  <div class="banner">
+    <img src="photos/homepage_banner.webp" alt="" class="banner-img" fetchpriority="high" />
+  </div>
 
-  <!-- Ambient background blobs -->
-  <div class="bg-blob blob-1"></div>
-  <div class="bg-blob blob-2"></div>
-  <div class="bg-blob blob-3"></div>
+  <!-- CLOUD NAME -->
+  <h1 class="cloud-name">Winn Ketchum</h1>
 
-  <main class="container">
+  <!-- RIGHT NAV ── "Travels" expandable panel -->
+  <nav class="travels-nav" id="travels-nav">
+    <div class="travels-panel" id="travels-panel" aria-hidden="true">
+      <a href="map.html" class="travels-link">National Parks &amp; Monuments</a>
+    </div>
+    <button class="travels-tab" id="travels-tab" onclick="toggleTravels()" aria-expanded="false" aria-controls="travels-panel">
+      <span class="travels-tab-label">Travels</span>
+      <span class="travels-tab-arrow">‹</span>
+    </button>
+  </nav>
 
-    <!-- NAV -->
-    <nav class="site-nav index-nav">
-      <a href="map.html" class="nav-link nav-link-right">Hometown Map →</a>
-    </nav>
+  <script>
+    function toggleTravels() {
+      const nav   = document.getElementById('travels-nav');
+      const tab   = document.getElementById('travels-tab');
+      const panel = document.getElementById('travels-panel');
+      const open  = nav.classList.toggle('open');
+      tab.setAttribute('aria-expanded', open);
+      panel.setAttribute('aria-hidden', !open);
+      tab.querySelector('.travels-tab-arrow').textContent = open ? '›' : '‹';
+    }
+  </script>
 
-    <!-- HERO -->
-    <section class="hero">
-      <div class="photo-wrap">
-        <div class="photo-placeholder">
-          <span>W</span>
-        </div>
-        <div class="photo-ring"></div>
-      </div>
-      <div class="hero-text">
-        <p class="eyebrow">Hello, I'm</p>
-        <h1 class="name">Winn</h1>
-        <p class="tagline">Builder · Thinker · Creator</p>
-      </div>
-    </section>
-
-    <!-- ABOUT -->
-    <section class="card about" id="about">
-      <span class="card-label">About Me</span>
-      <p>
-        I'm Winn — someone who finds meaning in the intersection of creativity and craft. Whether it's a project, a conversation, or a new idea, I show up with curiosity and care. I believe good work speaks for itself, and great work leaves people better than it found them.
-      </p>
-      <p>
-        When I'm not building things, you'll probably find me exploring something new, connecting with interesting people, or figuring out how to make something just a little bit better.
-      </p>
-    </section>
-
-    <!-- SKILLS -->
-    <section class="card skills" id="skills">
-      <span class="card-label">Skills &amp; Interests</span>
-      <div class="tags">
-        <span class="tag">Design</span>
-        <span class="tag">Strategy</span>
-        <span class="tag">Writing</span>
-        <span class="tag">Technology</span>
-        <span class="tag">Problem Solving</span>
-        <span class="tag">Collaboration</span>
-        <span class="tag">Leadership</span>
-        <span class="tag">Innovation</span>
-      </div>
-    </section>
-
-    <!-- LINKS -->
-    <section class="card links" id="links">
-      <span class="card-label">Connect</span>
-      <div class="link-grid">
-        <a href="/cdn-cgi/l/email-protection#94fcf1f8f8fbd4f1ecf5f9e4f8f1baf7fbf9" class="link-item">
-          <div class="link-icon">✉</div>
-          <div class="link-meta">
-            <span class="link-name">Email</span>
-            <span class="link-val"><span class="__cf_email__" data-cfemail="b4dcd1d8d8dbf4d1ccd5d9c4d8d19ad7dbd9">[email&#160;protected]</span></span>
-          </div>
-          <span class="link-arrow">→</span>
-        </a>
-        <a href="https://linkedin.com/in/yourhandle" target="_blank" class="link-item">
-          <div class="link-icon">in</div>
-          <div class="link-meta">
-            <span class="link-name">LinkedIn</span>
-            <span class="link-val">/in/yourhandle</span>
-          </div>
-          <span class="link-arrow">→</span>
-        </a>
-        <a href="https://twitter.com/yourhandle" target="_blank" class="link-item">
-          <div class="link-icon">𝕏</div>
-          <div class="link-meta">
-            <span class="link-name">X / Twitter</span>
-            <span class="link-val">@yourhandle</span>
-          </div>
-          <span class="link-arrow">→</span>
-        </a>
-        <a href="https://github.com/yourhandle" target="_blank" class="link-item">
-          <div class="link-icon">⌥</div>
-          <div class="link-meta">
-            <span class="link-name">GitHub</span>
-            <span class="link-val">/yourhandle</span>
-          </div>
-          <span class="link-arrow">→</span>
-        </a>
-      </div>
-    </section>
-
-    <footer>
-      <p>Made with care &nbsp;·&nbs
+</body>
+</html>
