@@ -29,6 +29,13 @@
   </nav>
 
   <script>
+    const bannerImg = document.querySelector('.banner-img');
+    if (bannerImg.complete) {
+      bannerImg.classList.add('loaded');
+    } else {
+      bannerImg.addEventListener('load', () => bannerImg.classList.add('loaded'));
+    }
+
     function toggleTravels() {
       const nav   = document.getElementById('travels-nav');
       const tab   = document.getElementById('travels-tab');

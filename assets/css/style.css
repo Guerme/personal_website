@@ -49,17 +49,21 @@ body {
 .banner-img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: fill;
   object-position: center;
   display: block;
+  opacity: 0;
+}
+
+.banner-img.loaded {
+  opacity: 1;
 }
 
 /* ── Cloud Name ── */
 .cloud-name {
   position: fixed;
-  top: calc(130px + 5vh);
-  left: 50%;
-  transform: translateX(-90%);
+  top: 0px;
+  left: 0px;
   z-index: 5;
   font-family: 'Cloudsky', cursive;
   font-size: clamp(64px, 10vw, 128px);

@@ -2,7 +2,7 @@
 
 ## Editing Commands
 
-Claude has permission to edit all css, js, and html files in the website directory
+Claude has permission to edit all css, js, and html files in the website directory without asking for confirmation. This includes all subdirectories under website/.
 
 ## Git Commits
 
