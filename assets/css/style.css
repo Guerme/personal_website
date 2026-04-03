@@ -3,7 +3,7 @@
    (rename the file to match exactly, or update the src path below) */
 @font-face {
   font-family: 'Cloudsky';
-  src: url('Cloudsky.ttf') format('truetype');
+  src: url('Cloudsky.woff2') format('woff2');
   font-weight: normal;
   font-style: italic;
   font-display: swap;
@@ -21,7 +21,7 @@
   --shadow: 0 8px 40px rgba(0, 0, 0, 0.5);
   --radius: 20px;
   --font-display: 'Playfair Display', Georgia, serif;
-  --font-body: 'DM Sans', sans-serif;
+  --font-body: system-ui, sans-serif;
 }
 
 /* ── Reset ── */
@@ -142,8 +142,7 @@ body {
   overflow: hidden;
   transition: width 0.3s ease;
   background: var(--card-bg);
-  border: 1px solid var(--card-border);
-  border-right: none;
+  border: none;
   border-radius: 12px 0 0 12px;
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
@@ -157,6 +156,8 @@ body {
 .travels-nav.open .travels-panel {
   width: 220px;
   padding: 12px 0;
+  border: 1px solid var(--card-border);
+  border-right: none;
 }
 
 .travels-link {
