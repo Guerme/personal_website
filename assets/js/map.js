@@ -1,3 +1,17 @@
+// ── Scale Value ──
+const pageScale = (window.innerWidth * window.innerHeight) / (1920 * 959);
+const zoomScale = pageScale === 1 ? Math.cbrt(pageScale) : Math.cbrt(pageScale) * 1.125;
+
+// ── Map Configs ──
+const MAP_CONFIGS = {
+  main:          { center: [-100,    38    ], zoom: 5.2 * zoomScale },
+  alaska:        { center: [-153,    61    ], zoom: 3.4 * zoomScale },
+  hawaii:        { center: [-165.1,  20    ], zoom: 3.9 * zoomScale },
+  samoa:         { center: [-169.7, -14.4  ], zoom: 7   * zoomScale },
+  marianas:      { center: [145,     20    ], zoom: 7   * zoomScale },
+  virgin_islands:{ center: [-64.7,   18.05 ], zoom: 7   * zoomScale },
+};
+
 // ── Main Map ──
 const vectorSource = new ol.source.Vector();
 const vectorLayer  = new ol.layer.Vector({ source: vectorSource });
@@ -11,8 +25,8 @@ const main_map = new ol.Map({
   target: 'map',
   layers: [new ol.layer.Tile({ source: new ol.source.OSM() }), vectorLayer],
   view: new ol.View({
-    center: ol.proj.fromLonLat([-100, 38]),
-    zoom: 5.2,
+    center: ol.proj.fromLonLat(MAP_CONFIGS.main.center),
+    zoom: MAP_CONFIGS.main.zoom,
     minZoom: 2,
     maxZoom: 18,
   }),
@@ -21,14 +35,15 @@ const main_map = new ol.Map({
 
 // ── Alaska Inset Map ──
 // Wrapper carries the shadow (drop-shadow follows the clipped shape)
+const s = Math.cbrt(pageScale);
 const alaska_wrapper = document.createElement('div');
 alaska_wrapper.id = 'alaska-inset';
 alaska_wrapper.style.cssText = `
   position: absolute;
   bottom: 20px;
   left: 20px;
-  width: 400px;
-  height: 300px;
+  width: ${400*s}px;
+  height: ${300*s}px;
   z-index: 10;
   filter: drop-shadow(0 2px 8px rgba(0,0,0,0.2));
 `;
@@ -38,9 +53,7 @@ main_map.getTargetElement().appendChild(alaska_wrapper);
 // 400×300: diagonal cut from (300,0) to (400,75), rounded at the 3 right-angle corners
 const alaska_div = document.createElement('div');
 alaska_div.style.cssText = `width: 100%; height: 100%; overflow: hidden;`;
-alaska_div.style.clipPath = "path('m 8,0 h 234 c 10.08645,0.22903816 13.89497,3.3440934 20.77009,10.705872 " +
-                            "L 392.84965,143.09541 c 5.78131,5.61884 5.96965,5.58121 7.29264,13.68914 L 400,292 " +
-                            "c -0.005,4.41828 -3.58172,8 -8,8 H 8 c -4.418278,0 -8,-3.58172 -8,-8 V 8 C 0,3.581722 3.581722,0 8,0 Z')";
+alaska_div.style.clipPath = `path('m ${8*s},0 h ${234*s} c ${10.08645*s},${0.22903816*s} ${13.89497*s},${3.3440934*s} ${20.77009*s},${10.705872*s} L ${392.84965*s},${143.09541*s} c ${5.78131*s},${5.61884*s} ${5.96965*s},${5.58121*s} ${7.29264*s},${13.68914*s} L ${400*s},${292*s} c ${-0.005*s},${4.41828*s} ${-3.58172*s},${8*s} ${-8*s},${8*s} H ${8*s} c ${-4.418278*s},0 ${-8*s},${-3.58172*s} ${-8*s},${-8*s} V ${8*s} C 0,${3.581722*s} ${3.581722*s},0 ${8*s},0 Z')`;
 alaska_wrapper.appendChild(alaska_div);
 
 alaska_map = new ol.Map({
@@ -50,8 +63,8 @@ alaska_map = new ol.Map({
     new ol.layer.Vector({ source: vectorSource }),
   ],
   view: new ol.View({
-    center: ol.proj.fromLonLat([-153, 61]),
-    zoom: 3.4,
+    center: ol.proj.fromLonLat(MAP_CONFIGS.alaska.center),
+    zoom: MAP_CONFIGS.alaska.zoom,
     minZoom: 2,
     maxZoom: 10,
   }),
@@ -80,10 +93,10 @@ const hawaii_wrapper = document.createElement('div');
 hawaii_wrapper.id = 'hawaii-inset';
 hawaii_wrapper.style.cssText = `
   position: absolute;
-  bottom: 330px;
+  bottom: ${20 + 300*s + 10}px;
   left: 20px;
-  width: 250px;
-  height: 150px;
+  width: ${250*s}px;
+  height: ${150*s}px;
   z-index: 10;
   filter: drop-shadow(0 2px 8px rgba(0,0,0,0.2));
 `;
@@ -91,7 +104,7 @@ main_map.getTargetElement().appendChild(hawaii_wrapper);
 
 const hawaii_div = document.createElement('div');
 hawaii_div.style.cssText = `width: 100%; height: 100%; overflow: hidden;`;
-hawaii_div.style.clipPath = "path('M 8,0 H 242 A 8,8 0 0 1 250,8 V 142 A 8,8 0 0 1 242,150 H 8 A 8,8 0 0 1 0,142 V 8 A 8,8 0 0 1 8,0 Z')";
+hawaii_div.style.clipPath = `path('M ${8*s},0 H ${242*s} A ${8*s},${8*s} 0 0 1 ${250*s},${8*s} V ${142*s} A ${8*s},${8*s} 0 0 1 ${242*s},${150*s} H ${8*s} A ${8*s},${8*s} 0 0 1 0,${142*s} V ${8*s} A ${8*s},${8*s} 0 0 1 ${8*s},0 Z')`;
 hawaii_wrapper.appendChild(hawaii_div);
 
 hawaii_map = new ol.Map({
@@ -101,8 +114,8 @@ hawaii_map = new ol.Map({
     new ol.layer.Vector({ source: vectorSource }),
   ],
   view: new ol.View({
-    center: ol.proj.fromLonLat([-165, 20]),
-    zoom: 3.9,
+    center: ol.proj.fromLonLat(MAP_CONFIGS.hawaii.center),
+    zoom: MAP_CONFIGS.hawaii.zoom,
     minZoom: 2,
     maxZoom: 14,
   }),
@@ -131,10 +144,10 @@ const samoa_wrapper = document.createElement('div');
 samoa_wrapper.id = 'samoa-inset';
 samoa_wrapper.style.cssText = `
   position: absolute;
-  bottom: 490px;
+  bottom: ${40 + 450*s}px;
   left: 20px;
-  width: 250px;
-  height: 150px;
+  width: ${250*s}px;
+  height: ${150*s}px;
   z-index: 10;
   filter: drop-shadow(0 2px 8px rgba(0,0,0,0.2));
 `;
@@ -142,7 +155,7 @@ main_map.getTargetElement().appendChild(samoa_wrapper);
 
 const samoa_div = document.createElement('div');
 samoa_div.style.cssText = `width: 100%; height: 100%; overflow: hidden;`;
-samoa_div.style.clipPath = "path('M 8,0 H 242 A 8,8 0 0 1 250,8 V 142 A 8,8 0 0 1 242,150 H 8 A 8,8 0 0 1 0,142 V 8 A 8,8 0 0 1 8,0 Z')";
+samoa_div.style.clipPath = `path('M ${8*s},0 H ${242*s} A ${8*s},${8*s} 0 0 1 ${250*s},${8*s} V ${142*s} A ${8*s},${8*s} 0 0 1 ${242*s},${150*s} H ${8*s} A ${8*s},${8*s} 0 0 1 0,${142*s} V ${8*s} A ${8*s},${8*s} 0 0 1 ${8*s},0 Z')`;
 samoa_wrapper.appendChild(samoa_div);
 
 samoa_map = new ol.Map({
@@ -152,8 +165,8 @@ samoa_map = new ol.Map({
     new ol.layer.Vector({ source: vectorSource }),
   ],
   view: new ol.View({
-    center: ol.proj.fromLonLat([-169.7, -14.4]),
-    zoom: 7,
+    center: ol.proj.fromLonLat(MAP_CONFIGS.samoa.center),
+    zoom: MAP_CONFIGS.samoa.zoom,
     minZoom: 2,
     maxZoom: 14,
   }),
@@ -184,17 +197,25 @@ marianas_wrapper.id = 'marianas-inset';
 marianas_wrapper.style.cssText = `
   position: absolute;
   bottom: 20px;
-  left: 430px;
-  width: 170px;
-  height: 150px;
+  left: ${30 + 400*s}px;
+  width: ${200*s}px;
+  height: ${150*s}px;
   z-index: 10;
   filter: drop-shadow(0 2px 8px rgba(0,0,0,0.2));
 `;
 main_map.getTargetElement().appendChild(marianas_wrapper);
 
+// ── Virgin Islands Anchor ──
+main_map.once('rendercomplete', () => {
+  const anchor = ol.proj.fromLonLat([-89.5, 26.5]);
+  const pixel  = main_map.getPixelFromCoordinate(anchor);
+  virgin_islands_wrapper.style.left = `${pixel[0] - (250*s) / 2}px`;
+  virgin_islands_wrapper.style.top  = `${pixel[1] - (120*s) / 2}px`;
+});
+
 const marianas_div = document.createElement('div');
 marianas_div.style.cssText = `width: 100%; height: 100%; overflow: hidden;`;
-marianas_div.style.clipPath = "path('M 8,0 H 162 A 8,8 0 0 1 170,8 V 142 A 8,8 0 0 1 162,150 H 8 A 8,8 0 0 1 0,142 V 8 A 8,8 0 0 1 8,0 Z')";
+marianas_div.style.clipPath = `path('M ${8*s},0 H ${192*s} A ${8*s},${8*s} 0 0 1 ${200*s},${8*s} V ${142*s} A ${8*s},${8*s} 0 0 1 ${192*s},${150*s} H ${8*s} A ${8*s},${8*s} 0 0 1 0,${142*s} V ${8*s} A ${8*s},${8*s} 0 0 1 ${8*s},0 Z')`;
 marianas_wrapper.appendChild(marianas_div);
 
 marianas_map = new ol.Map({
@@ -204,8 +225,8 @@ marianas_map = new ol.Map({
     new ol.layer.Vector({ source: vectorSource }),
   ],
   view: new ol.View({
-    center: ol.proj.fromLonLat([145, 20]),
-    zoom: 7,
+    center: ol.proj.fromLonLat(MAP_CONFIGS.marianas.center),
+    zoom: MAP_CONFIGS.marianas.zoom,
     minZoom: 2,
     maxZoom: 14,
   }),
@@ -216,7 +237,7 @@ const marianas_label = document.createElement('div');
 marianas_label.textContent = 'Marianas';
 marianas_label.style.cssText = `
   position: absolute;
-  bottom: 20px;
+  bottom: ${20*s + 2}px;
   left: 6px;
   font-family: 'DM Sans', sans-serif;
   font-size: 10px;
@@ -234,10 +255,8 @@ const virgin_islands_wrapper = document.createElement('div');
 virgin_islands_wrapper.id = 'virgin-islands-inset';
 virgin_islands_wrapper.style.cssText = `
   position: absolute;
-  bottom: 20px;
-  left: 1100px;
-  width: 250px;
-  height: 120px;
+  width: ${250*s}px;
+  height: ${120*s}px;
   z-index: 10;
   filter: drop-shadow(0 2px 8px rgba(0,0,0,0.2));
 `;
@@ -245,7 +264,7 @@ main_map.getTargetElement().appendChild(virgin_islands_wrapper);
 
 const virgin_islands_div = document.createElement('div');
 virgin_islands_div.style.cssText = `width: 100%; height: 100%; overflow: hidden;`;
-virgin_islands_div.style.clipPath = "path('M 8,0 H 242 A 8,8 0 0 1 250,8 V 112 A 8,8 0 0 1 242,120 H 8 A 8,8 0 0 1 0,112 V 8 A 8,8 0 0 1 8,0 Z')";
+virgin_islands_div.style.clipPath = `path('M ${8*s},0 H ${242*s} A ${8*s},${8*s} 0 0 1 ${250*s},${8*s} V ${112*s} A ${8*s},${8*s} 0 0 1 ${242*s},${120*s} H ${8*s} A ${8*s},${8*s} 0 0 1 0,${112*s} V ${8*s} A ${8*s},${8*s} 0 0 1 ${8*s},0 Z')`;
 virgin_islands_wrapper.appendChild(virgin_islands_div);
 
 virgin_islands_map = new ol.Map({
@@ -255,8 +274,8 @@ virgin_islands_map = new ol.Map({
     new ol.layer.Vector({ source: vectorSource }),
   ],
   view: new ol.View({
-    center: ol.proj.fromLonLat([-64.7, 18.05]),
-    zoom: 7,
+    center: ol.proj.fromLonLat(MAP_CONFIGS.virgin_islands.center),
+    zoom: MAP_CONFIGS.virgin_islands.zoom,
     minZoom: 2,
     maxZoom: 14,
   }),
@@ -735,6 +754,7 @@ legend.innerHTML = `
   </div>
 `;
 
+legend.style.visibility = 'hidden';
 legend.addEventListener('pointerdown', e => e.stopPropagation());
 legend.addEventListener('click',       e => e.stopPropagation());
 main_map.getViewport().appendChild(legend);
@@ -747,6 +767,7 @@ main_map.once('rendercomplete', () => {
     legend.style.left   = `${pixel[0] - legend.offsetWidth  / 2}px`;
     legend.style.top    = `${pixel[1] - legend.offsetHeight / 2}px`;
   }
+  legend.style.visibility = 'visible';
 });
 
 const dragHandle = document.getElementById('legend-handle');
@@ -812,19 +833,20 @@ function toggleMonFilter(which) {
 
 // ── Reset Extents ──
 const HOME_EXTENTS = [
-  [main_map,           [-100,    38    ], 5.2],
-  [alaska_map,         [-153,    61    ], 3.4],
-  [hawaii_map,         [-165,    20    ], 3.9],
-  [samoa_map,          [-169.7, -14.4  ], 7  ],
-  [marianas_map,       [ 145,    20    ], 7  ],
-  [virgin_islands_map, [-64.7,   18.05 ], 7  ],
+  [main_map,           MAP_CONFIGS.main.center,          MAP_CONFIGS.main.zoom],
+  [alaska_map,         MAP_CONFIGS.alaska.center,        MAP_CONFIGS.alaska.zoom],
+  [hawaii_map,         MAP_CONFIGS.hawaii.center,        MAP_CONFIGS.hawaii.zoom],
+  [samoa_map,          MAP_CONFIGS.samoa.center,         MAP_CONFIGS.samoa.zoom],
+  [marianas_map,       MAP_CONFIGS.marianas.center,      MAP_CONFIGS.marianas.zoom],
+  [virgin_islands_map, MAP_CONFIGS.virgin_islands.center,MAP_CONFIGS.virgin_islands.zoom],
 ];
 
-function addResetButton(mapInstance, center, zoom) {
+function addResetButton(mapInstance, center, zoom, horizontal = false) {
   mapInstance.once('rendercomplete', () => {
     const zoomEl = mapInstance.getTargetElement().querySelector('.ol-zoom');
     if (!zoomEl) return;
-    const zoomIn = zoomEl.querySelector('.ol-zoom-in');
+    const zoomIn  = zoomEl.querySelector('.ol-zoom-in');
+    const zoomOut = zoomEl.querySelector('.ol-zoom-out');
     if (!zoomIn) return;
 
     const btn = document.createElement('button');
@@ -841,14 +863,21 @@ function addResetButton(mapInstance, center, zoom) {
     row.style.cssText = 'display: flex; flex-direction: row; gap: 4px;';
     zoomIn.parentNode.insertBefore(row, zoomIn);
     row.appendChild(zoomIn);
+    if (horizontal && zoomOut) row.appendChild(zoomOut);
     row.appendChild(btn);
+    if (horizontal) zoomEl.style.visibility = 'visible';  // reveal main map controls after render
   });
 }
 
-HOME_EXTENTS.forEach(([m, center, zoom]) => addResetButton(m, center, zoom));
+HOME_EXTENTS.forEach(([m, center, zoom]) => addResetButton(m, center, zoom, m === main_map));
 
 // ── Render ──
 vectorSource.on('change', () => { alaska_map.render(); hawaii_map.render(); samoa_map.render(); marianas_map.render(); virgin_islands_map.render(); });
+
+// ── Attribution Scaling ──
+const attrStyle = document.createElement('style');
+attrStyle.textContent = `.ol-attribution, .ol-attribution * { font-size: ${12 * s}px !important; }`;
+document.head.appendChild(attrStyle);
 
 const observer = new IntersectionObserver(entries => {
   entries.forEach(entry => {

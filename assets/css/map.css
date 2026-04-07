@@ -81,6 +81,8 @@ body.is-map-page {
   position: absolute;
   bottom: 20px;
   right: 20px;
+  transform: scale(var(--page-scale));
+  transform-origin: bottom right;
   z-index: 10;
   background: rgb(250, 249, 249);
   border: 1px solid var(--card-border);
@@ -278,22 +280,9 @@ body.is-map-page {
 }
 .ol-attribution a { color: var(--accent) !important; }
 
-/* ── Marianas Attribution (full-width) ── */
-#marianas-inset .ol-attribution {
-  left: 0 !important;
-  right: 0 !important;
-  bottom: 0 !important;
-  width: 100% !important;
-  border-radius: 0 !important;
-  justify-content: right !important;
-  font-size: 9px !important;
-}
-#marianas-inset .ol-attribution ul {
-  margin: 0 auto !important;
-  font-size: 9px !important;
-}
-
 /* Zoom controls */
+#map > .ol-viewport .ol-zoom { visibility: hidden; }
+
 .ol-zoom {
   top: 12px !important;
   left: 12px !important;
