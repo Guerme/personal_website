@@ -207,7 +207,7 @@ main_map.getTargetElement().appendChild(marianas_wrapper);
 
 // ── Virgin Islands Anchor ──
 main_map.once('rendercomplete', () => {
-  const anchor = ol.proj.fromLonLat([-89.5, 26.5]);
+  const anchor = ol.proj.fromLonLat([-89.5, 26.2]);
   const pixel  = main_map.getPixelFromCoordinate(anchor);
   virgin_islands_wrapper.style.left = `${pixel[0] - (250*s) / 2}px`;
   virgin_islands_wrapper.style.top  = `${pixel[1] - (120*s) / 2}px`;
@@ -797,6 +797,60 @@ document.addEventListener('mousemove', e => {
 
 document.addEventListener('mouseup', () => { dragging = false; });
 
+// ── Legend Minimize ──
+const legendMinBtn = document.createElement('button');
+legendMinBtn.innerHTML = '→';
+legendMinBtn.title = 'Minimize';
+legendMinBtn.style.cssText = 'position: absolute; top: 50%; right: 6px; transform: translateY(-50%); background: rgba(255,255,255,0.92); border: 1px solid var(--card-border); ' +
+                             'border-radius: 4px; width: 16px; height: 16px; font-size: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center; ' +
+                                    'z-index: 1; line-height: 1;';
+document.getElementById('legend-handle').appendChild(legendMinBtn);
+
+const legendOverlay = document.createElement('div');
+legendOverlay.style.cssText = 'position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgb(250,249,249); border-radius: 12px; display: none; align-items: center; justify-content: center; padding-top: 22px; box-sizing: border-box; z-index: 1;';
+const legendOverlayLabel = document.createElement('div');
+legendOverlayLabel.textContent = 'Map Legend';
+legendOverlayLabel.style.cssText = "font-family: var(--font-body); font-size: 11px; font-weight: 600; letter-spacing: 0.1em; color: var(--ink-soft); writing-mode: vertical-lr; transform: rotate(180deg);";
+legendOverlay.appendChild(legendOverlayLabel);
+legend.appendChild(legendOverlay);
+
+const legendExpandBtn = document.createElement('button');
+legendExpandBtn.innerHTML = '←';
+legendExpandBtn.title = 'Expand';
+legendExpandBtn.style.cssText = 'position: absolute; top: 6px; left: 50%; transform: translateX(-50%); background: rgba(255,255,255,0.92); ' +
+                                'border: 1px solid var(--card-border); border-radius: 4px; width: 16px; height: 16px; font-size: 10px; cursor: pointer; display: none; ' +
+                                'align-items: center; justify-content: center; z-index: 2; line-height: 1;';
+legend.appendChild(legendExpandBtn);
+
+let legendFullWidth = null, legendFullHeight = null;
+
+let legendSavedLeft = null;
+
+legendMinBtn.addEventListener('click', e => {
+  e.stopPropagation();
+  legendFullWidth  = legend.offsetWidth;
+  legendFullHeight = legend.offsetHeight;
+  legendSavedLeft  = legend.style.left;
+  legend.style.left   = `${parseFloat(legend.style.left) + legendFullWidth - 30}px`;
+  legend.style.width  = '30px';
+  legend.style.height = `${legendFullHeight}px`;
+  legend.style.overflow = 'hidden';
+  legendOverlay.style.display   = 'flex';
+  legendExpandBtn.style.display = 'flex';
+  legendMinBtn.style.display    = 'none';
+});
+
+legendExpandBtn.addEventListener('click', e => {
+  e.stopPropagation();
+  legend.style.left   = legendSavedLeft;
+  legend.style.width  = `${legendFullWidth}px`;
+  legend.style.height = '';
+  legend.style.overflow = '';
+  legendOverlay.style.display   = 'none';
+  legendExpandBtn.style.display = 'none';
+  legendMinBtn.style.display    = 'flex';
+});
+
 // ── Park filters ──
 const parkFilter = { visited: false, unvisited: false };
 
@@ -841,9 +895,9 @@ const HOME_EXTENTS = [
   [virgin_islands_map, MAP_CONFIGS.virgin_islands.center,MAP_CONFIGS.virgin_islands.zoom],
 ];
 
-function addResetButton(mapInstance, center, zoom, horizontal = false) {
+function addResetButton(mapInstance, center, zoom, horizontal = false, newMinimize = false, label = '', leftMinimize = false, expandOnMinimize = false) {
   mapInstance.once('rendercomplete', () => {
-    const zoomEl = mapInstance.getTargetElement().querySelector('.ol-zoom');
+    const zoomEl  = mapInstance.getTargetElement().querySelector('.ol-zoom');
     if (!zoomEl) return;
     const zoomIn  = zoomEl.querySelector('.ol-zoom-in');
     const zoomOut = zoomEl.querySelector('.ol-zoom-out');
@@ -865,11 +919,185 @@ function addResetButton(mapInstance, center, zoom, horizontal = false) {
     row.appendChild(zoomIn);
     if (horizontal && zoomOut) row.appendChild(zoomOut);
     row.appendChild(btn);
-    if (horizontal) zoomEl.style.visibility = 'visible';  // reveal main map controls after render
+
+    if (!horizontal && !newMinimize && !leftMinimize) {
+      const wrapper    = mapInstance.getTargetElement().parentElement;
+      const fullHeight = wrapper.style.height;
+      let minimized    = false;
+
+      const minBtn = document.createElement('button');
+      minBtn.className = 'ol-reset-extent';
+      minBtn.title = 'Minimize';
+      minBtn.innerHTML = '−';
+      minBtn.type = 'button';
+      minBtn.addEventListener('click', e => {
+        e.preventDefault();
+        minimized = !minimized;
+        wrapper.style.height = minimized ? `${28 * s}px` : fullHeight;
+        minBtn.innerHTML     = minimized ? '+' : '−';
+      });
+      row.appendChild(minBtn);
+    }
+
+    if (!horizontal && newMinimize) {
+      const wrapper    = mapInstance.getTargetElement().parentElement;
+      const fullHeight = wrapper.style.height;
+
+      // Row 2: zoomOut + minimize button (↓)
+      const row2 = document.createElement('div');
+      row2.style.cssText = 'display: flex; flex-direction: row; gap: 4px; margin-top: 4px;';
+      if (zoomOut) row2.appendChild(zoomOut);
+      const minBtn = document.createElement('button');
+      minBtn.className = 'ol-reset-extent';
+      minBtn.title = 'Minimize';
+      minBtn.innerHTML = '↓';
+      minBtn.type = 'button';
+      row2.appendChild(minBtn);
+      zoomEl.appendChild(row2);
+
+      // Minimized overlay — blue background + centered label
+      const overlay = document.createElement('div');
+      overlay.style.cssText = 'position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #aad3df; display: none; align-items: center; justify-content: center; padding-left: 28px; box-sizing: border-box; z-index: 1;';
+      const overlayLabel = document.createElement('div');
+      overlayLabel.textContent = `${label} Inset Map`;
+      overlayLabel.style.cssText = "font-family: 'DM Sans', sans-serif; font-size: 10px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(0,0,0,0.5);";
+      overlay.appendChild(overlayLabel);
+      mapInstance.getViewport().appendChild(overlay);
+
+      // Expand button (↑) shown at top-left when minimized
+      const expandBtn = document.createElement('button');
+      expandBtn.className = 'ol-reset-extent ol-inset-expand';
+      expandBtn.title = 'Expand';
+      expandBtn.innerHTML = '↑';
+      expandBtn.type = 'button';
+      expandBtn.style.cssText = 'position: absolute; top: 6px; left: 6px; display: none; z-index: 2;';
+      mapInstance.getViewport().appendChild(expandBtn);
+
+      const innerDiv      = mapInstance.getTargetElement();
+      const savedClipPath = innerDiv.style.clipPath;
+      let savedTop        = null;
+
+      minBtn.addEventListener('click', e => {
+        e.preventDefault();
+        savedTop = wrapper.style.top;
+        const topPx = parseFloat(savedTop);
+        if (!isNaN(topPx)) {
+          wrapper.style.top = `${topPx + parseFloat(fullHeight) - 30}px`;
+        }
+        wrapper.style.height    = '30px';
+        innerDiv.style.clipPath = 'none';
+        zoomEl.style.visibility = 'hidden';
+        overlay.style.display   = 'flex';
+        expandBtn.style.display = 'flex';
+      });
+
+      expandBtn.addEventListener('click', e => {
+        e.preventDefault();
+        if (savedTop !== null) wrapper.style.top = savedTop;
+        wrapper.style.height    = fullHeight;
+        innerDiv.style.clipPath = savedClipPath;
+        zoomEl.style.visibility = 'visible';
+        overlay.style.display   = 'none';
+        expandBtn.style.display = 'none';
+      });
+    }
+
+    if (!horizontal && leftMinimize) {
+      const wrapper     = mapInstance.getTargetElement().parentElement;
+      const fullWidth   = wrapper.style.width;
+      const innerDiv    = mapInstance.getTargetElement();
+      const savedClipPath = innerDiv.style.clipPath;
+
+      // Row 2: zoomOut + minimize button (←)
+      const row2 = document.createElement('div');
+      row2.style.cssText = 'display: flex; flex-direction: row; gap: 4px; margin-top: 4px;';
+      if (zoomOut) row2.appendChild(zoomOut);
+      const minBtn = document.createElement('button');
+      minBtn.className = 'ol-reset-extent';
+      minBtn.title = 'Minimize';
+      minBtn.innerHTML = '←';
+      minBtn.type = 'button';
+      row2.appendChild(minBtn);
+      zoomEl.appendChild(row2);
+
+      // Minimized overlay — blue background + vertical label(s)
+      const overlay = document.createElement('div');
+      const labelStyle = "font-family: 'DM Sans', sans-serif; font-size: 10px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(0,0,0,0.5); writing-mode: vertical-lr; transform: rotate(180deg);";
+
+      if (expandOnMinimize) {
+        // Two-column layout: label name left, "Inset Map" right
+        overlay.style.cssText = 'position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #aad3df; display: none; flex-direction: row; z-index: 1;';
+        const col1 = document.createElement('div');
+        col1.style.cssText = 'flex: 1; display: flex; align-items: center; justify-content: center; padding-top: 28px; box-sizing: border-box;';
+        const col1Label = document.createElement('div');
+        col1Label.textContent = label;
+        col1Label.style.cssText = labelStyle;
+        col1.appendChild(col1Label);
+        const col2 = document.createElement('div');
+        col2.style.cssText = 'flex: 1; display: flex; align-items: center; justify-content: center; padding-top: 28px; box-sizing: border-box;';
+        const col2Label = document.createElement('div');
+        col2Label.textContent = 'Inset Map';
+        col2Label.style.cssText = labelStyle;
+        col2.appendChild(col2Label);
+        overlay.appendChild(col1);
+        overlay.appendChild(col2);
+      } else {
+        overlay.style.cssText = 'position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #aad3df; display: none; align-items: center; justify-content: center; padding-top: 28px; box-sizing: border-box; z-index: 1;';
+        const overlayLabel = document.createElement('div');
+        overlayLabel.textContent = `${label} Inset Map`;
+        overlayLabel.style.cssText = labelStyle;
+        overlay.appendChild(overlayLabel);
+      }
+      mapInstance.getViewport().appendChild(overlay);
+
+      // Expand button (→) shown at top-left when minimized
+      const expandBtn = document.createElement('button');
+      expandBtn.className = 'ol-reset-extent ol-inset-expand';
+      expandBtn.title = 'Expand';
+      expandBtn.innerHTML = '→';
+      expandBtn.type = 'button';
+      expandBtn.style.cssText = expandOnMinimize
+        ? 'position: absolute; top: 6px; left: 50%; transform: translateX(-50%); display: none; z-index: 2;'
+        : 'position: absolute; top: 6px; left: 6px; display: none; z-index: 2;';
+      mapInstance.getViewport().appendChild(expandBtn);
+
+      const collapsedWidth = expandOnMinimize ? '35px' : '30px';
+
+      minBtn.addEventListener('click', e => {
+        e.preventDefault();
+        wrapper.style.width     = collapsedWidth;
+        innerDiv.style.clipPath = 'none';
+        zoomEl.style.visibility = 'hidden';
+        overlay.style.display   = 'flex';
+        expandBtn.style.display = 'flex';
+      });
+
+      expandBtn.addEventListener('click', e => {
+        e.preventDefault();
+        wrapper.style.width     = fullWidth;
+        innerDiv.style.clipPath = savedClipPath;
+        zoomEl.style.visibility = 'visible';
+        overlay.style.display   = 'none';
+        expandBtn.style.display = 'none';
+      });
+    }
+
+    zoomEl.style.visibility = 'visible';  // reveal controls after render
   });
 }
 
-HOME_EXTENTS.forEach(([m, center, zoom]) => addResetButton(m, center, zoom, m === main_map));
+HOME_EXTENTS.forEach(([m, center, zoom]) => {
+  const label     = m === alaska_map        ? 'Alaska'
+                  : m === marianas_map      ? 'Marianas'
+                  : m === virgin_islands_map? 'Virgin Islands'
+                  : m === hawaii_map        ? 'Hawaii'
+                  : m === samoa_map         ? 'American Samoa'
+                  : '';
+  const newMin    = m === virgin_islands_map || m === alaska_map || m === marianas_map;
+  const leftMin   = m === hawaii_map || m === samoa_map;
+  const expandMin = m === samoa_map;
+  addResetButton(m, center, zoom, m === main_map, newMin, label, leftMin, expandMin);
+});
 
 // ── Render ──
 vectorSource.on('change', () => { alaska_map.render(); hawaii_map.render(); samoa_map.render(); marianas_map.render(); virgin_islands_map.render(); });

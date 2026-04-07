@@ -281,7 +281,12 @@ body.is-map-page {
 .ol-attribution a { color: var(--accent) !important; }
 
 /* Zoom controls */
-#map > .ol-viewport .ol-zoom { visibility: hidden; }
+#map > .ol-viewport .ol-zoom,
+#alaska-inset .ol-zoom,
+#hawaii-inset .ol-zoom,
+#samoa-inset .ol-zoom,
+#marianas-inset .ol-zoom,
+#virgin-islands-inset .ol-zoom { visibility: hidden; }
 
 .ol-zoom {
   top: 12px !important;
@@ -417,18 +422,40 @@ body.is-map-page {
   left: 6px !important;
 }
 
+#hawaii-inset .ol-zoom,
+#samoa-inset .ol-zoom {
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  align-items: center !important;
+}
+
+.ol-inset-expand {
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 10px !important;
+  width: 16px !important;
+  height: 16px !important;
+  line-height: 16px !important;
+  margin-bottom: 2px !important;
+  border-radius: 4px !important;
+}
+
 #hawaii-inset .ol-zoom .ol-zoom-in,
 #hawaii-inset .ol-zoom .ol-zoom-out,
-#hawaii-inset .ol-reset-extent,
+#hawaii-inset .ol-zoom .ol-reset-extent,
 #samoa-inset .ol-zoom .ol-zoom-in,
 #samoa-inset .ol-zoom .ol-zoom-out,
-#samoa-inset .ol-reset-extent,
+#samoa-inset .ol-zoom .ol-reset-extent,
 #marianas-inset .ol-zoom .ol-zoom-in,
 #marianas-inset .ol-zoom .ol-zoom-out,
-#marianas-inset .ol-reset-extent,
+#marianas-inset .ol-zoom .ol-reset-extent,
 #virgin-islands-inset .ol-zoom .ol-zoom-in,
 #virgin-islands-inset .ol-zoom .ol-zoom-out,
-#virgin-islands-inset .ol-reset-extent {
+#virgin-islands-inset .ol-zoom .ol-reset-extent {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
   font-size: 9px !important;
   width: 16px !important;
   height: 16px !important;
@@ -446,6 +473,11 @@ body.is-map-page {
   line-height: 16px !important;
   margin-bottom: 2px !important;
   border-radius: 4px !important;
+}
+
+#alaska-inset .ol-inset-expand {
+  width: 16px !important;
+  height: 16px !important;
 }
 
 /* ── Responsive ── */
