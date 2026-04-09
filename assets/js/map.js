@@ -1,6 +1,6 @@
 // ── Scale Value ──
 const pageScale = (window.innerWidth * window.innerHeight) / (1920 * 959);
-const zoomScale = Math.cbrt(pageScale);
+const zoomScale = (4.0 + 1.2 * pageScale) / 5.2;
 
 // ── Map Configs ──
 const MAP_CONFIGS = {
@@ -1156,7 +1156,9 @@ if (mapEl) observer.observe(mapEl);
     badge.className = 'map-res-badge';
     badge.innerHTML =
       `<span>Screen Resolution: ${window.screen.width} &times; ${window.screen.height}</span>` +
-      `<span>Zoom Level: ${zoom}</span>`;
+      `<span>Zoom Level: ${zoom}</span>` +
+      `<span>Page Scale: ${pageScale}</span>` + 
+      `<span>Zoom Scale: ${zoomScale}</span>`;
 
     badge.style.left       = e.clientX + 'px';
     badge.style.top        = e.clientY + 'px';
