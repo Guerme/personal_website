@@ -207,10 +207,11 @@ main_map.getTargetElement().appendChild(marianas_wrapper);
 
 // ── Virgin Islands Anchor ──
 main_map.once('rendercomplete', () => {
-  const anchor = ol.proj.fromLonLat([-89.5, 26.2]);
-  const pixel  = main_map.getPixelFromCoordinate(anchor);
+  const anchor   = ol.proj.fromLonLat([-89.5, 26.2]);
+  const pixel    = main_map.getPixelFromCoordinate(anchor);
+  const vpHeight = main_map.getViewport().offsetHeight;
   virgin_islands_wrapper.style.left = `${pixel[0] - (250*s) / 2}px`;
-  virgin_islands_wrapper.style.top  = `${pixel[1] - (120*s) / 2}px`;
+  virgin_islands_wrapper.style.top  = `${vpHeight - 20 - 120*s}px`;
 });
 
 const marianas_div = document.createElement('div');
@@ -762,9 +763,10 @@ main_map.getViewport().appendChild(legend);
 main_map.once('rendercomplete', () => {
   const pixel = main_map.getPixelFromCoordinate(ol.proj.fromLonLat([-68.8, 34.5]));
   if (pixel) {
+    const vpWidth = main_map.getViewport().offsetWidth;
     legend.style.right  = 'auto';
     legend.style.bottom = 'auto';
-    legend.style.left   = `${pixel[0] - legend.offsetWidth  / 2}px`;
+    legend.style.left   = `${vpWidth - legend.offsetWidth - 5}px`;
     legend.style.top    = `${pixel[1] - legend.offsetHeight / 2}px`;
   }
   legend.style.visibility = 'visible';
