@@ -72,8 +72,9 @@ body.is-map-page {
   margin: 0;
 }
 .map-hero h1 {
-  font-size: 32px;
+  font-size: calc(32px * var(--page-scale));
   margin: 0;
+  white-space: nowrap;
 }
 
 /* ── Map Legend ── */
@@ -478,6 +479,34 @@ body.is-map-page {
 #alaska-inset .ol-inset-expand {
   width: 16px !important;
   height: 16px !important;
+}
+
+/* ── Right-click Resolution Badge ── */
+.map-res-badge {
+  position: fixed;
+  z-index: 9999;
+  padding: 7px 22px 7px 40px;
+  min-width: 300px;
+  text-align: left;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 8px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.13);
+  backdrop-filter: blur(12px);
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 300;
+  color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  pointer-events: none;
+  user-select: none;
+  animation: badgeFadeIn 0.12s ease;
+}
+@keyframes badgeFadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 /* ── Responsive ── */

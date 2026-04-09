@@ -1,6 +1,6 @@
 // ── Scale Value ──
 const pageScale = (window.innerWidth * window.innerHeight) / (1920 * 959);
-const zoomScale = pageScale === 1 ? Math.cbrt(pageScale) : Math.cbrt(pageScale) * 1.125;
+const zoomScale = Math.cbrt(pageScale);
 
 // ── Map Configs ──
 const MAP_CONFIGS = {
@@ -41,7 +41,7 @@ alaska_wrapper.id = 'alaska-inset';
 alaska_wrapper.style.cssText = `
   position: absolute;
   bottom: 20px;
-  left: 20px;
+  left: 12px;
   width: ${400*s}px;
   height: ${300*s}px;
   z-index: 10;
@@ -94,7 +94,7 @@ hawaii_wrapper.id = 'hawaii-inset';
 hawaii_wrapper.style.cssText = `
   position: absolute;
   bottom: ${20 + 300*s + 10}px;
-  left: 20px;
+  left: 12px;
   width: ${250*s}px;
   height: ${150*s}px;
   z-index: 10;
@@ -145,7 +145,7 @@ samoa_wrapper.id = 'samoa-inset';
 samoa_wrapper.style.cssText = `
   position: absolute;
   bottom: ${40 + 450*s}px;
-  left: 20px;
+  left: 12px;
   width: ${250*s}px;
   height: ${150*s}px;
   z-index: 10;
@@ -197,7 +197,7 @@ marianas_wrapper.id = 'marianas-inset';
 marianas_wrapper.style.cssText = `
   position: absolute;
   bottom: 20px;
-  left: ${30 + 400*s}px;
+  left: ${24 + 400*s}px;
   width: ${200*s}px;
   height: ${150*s}px;
   z-index: 10;
@@ -1022,30 +1022,31 @@ function addResetButton(mapInstance, center, zoom, horizontal = false, newMinimi
 
       // Minimized overlay — blue background + vertical label(s)
       const overlay = document.createElement('div');
-      const labelStyle = "font-family: 'DM Sans', sans-serif; font-size: 10px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(0,0,0,0.5); writing-mode: vertical-lr; transform: rotate(180deg);";
+      const labelStyle = "font-family: 'DM Sans', sans-serif; font-size: 10px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(0,0,0,0.5); writing-mode: vertical-lr; transform: rotate(180deg); white-space: normal; word-break: break-word; max-width: 60px;";
 
       if (expandOnMinimize) {
         // Two-column layout: label name left, "Inset Map" right
         overlay.style.cssText = 'position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #aad3df; display: none; flex-direction: row; z-index: 1;';
         const col1 = document.createElement('div');
-        col1.style.cssText = 'flex: 1; display: flex; align-items: center; justify-content: center; padding-top: 28px; box-sizing: border-box;';
+        col1.style.cssText = 'flex: 1; display: flex; align-items: left; justify-content: left; padding-top: 28px; box-sizing: border-box; min-width: 0;';
         const col1Label = document.createElement('div');
         col1Label.textContent = label;
-        col1Label.style.cssText = labelStyle;
+        col1Label.style.cssText = labelStyle + ' max-width: 100%;';
         col1.appendChild(col1Label);
         const col2 = document.createElement('div');
-        col2.style.cssText = 'flex: 1; display: flex; align-items: center; justify-content: center; padding-top: 28px; box-sizing: border-box;';
+        col2.style.cssText = 'flex: 1; display: flex; align-items: left; justify-content: left; padding-top: 28px; box-sizing: border-box; min-width: 0;';
         const col2Label = document.createElement('div');
         col2Label.textContent = 'Inset Map';
-        col2Label.style.cssText = labelStyle;
+        col2Label.style.cssText = labelStyle + ' max-width: 100%;';
         col2.appendChild(col2Label);
         overlay.appendChild(col1);
         overlay.appendChild(col2);
       } else {
-        overlay.style.cssText = 'position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #aad3df; display: none; align-items: center; justify-content: center; padding-top: 28px; box-sizing: border-box; z-index: 1;';
+        overlay.style.cssText = 'position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #aad3df; display: none; z-index: 1;';
         const overlayLabel = document.createElement('div');
-        overlayLabel.textContent = `${label} Inset Map`;
-        overlayLabel.style.cssText = labelStyle;
+        const reversedLabel = label.split(' ').reverse().join(' '); 
+        overlayLabel.textContent = `Inset Map ${reversedLabel}`;
+        overlayLabel.style.cssText = "font-family: 'DM Sans', sans-serif; font-size: 10px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(0,0,0,0.5); writing-mode: vertical-lr; transform: translateY(-50%) rotate(180deg); position: absolute; top: 50%; left: 4px; white-space: normal; word-break: break-word; max-width: 60px;";
         overlay.appendChild(overlayLabel);
       }
       mapInstance.getViewport().appendChild(overlay);
@@ -1065,11 +1066,21 @@ function addResetButton(mapInstance, center, zoom, horizontal = false, newMinimi
 
       minBtn.addEventListener('click', e => {
         e.preventDefault();
-        wrapper.style.width     = collapsedWidth;
         innerDiv.style.clipPath = 'none';
         zoomEl.style.visibility = 'hidden';
         overlay.style.display   = 'flex';
         expandBtn.style.display = 'flex';
+
+        // Measure overlay label and expand width to fit text
+        requestAnimationFrame(() => {
+          const labelEl = overlay.querySelector('div div') || overlay.querySelector('div');
+          if (labelEl) {
+            const labelHeight = labelEl.scrollHeight;
+            wrapper.style.width = `${labelHeight + 12}px`;
+          } else {
+            wrapper.style.width = collapsedWidth;
+          }
+        });
       });
 
       expandBtn.addEventListener('click', e => {
@@ -1095,7 +1106,7 @@ HOME_EXTENTS.forEach(([m, center, zoom]) => {
                   : '';
   const newMin    = m === virgin_islands_map || m === alaska_map || m === marianas_map;
   const leftMin   = m === hawaii_map || m === samoa_map;
-  const expandMin = m === samoa_map;
+  const expandMin = false;
   addResetButton(m, center, zoom, m === main_map, newMin, label, leftMin, expandMin);
 });
 
@@ -1118,3 +1129,48 @@ const observer = new IntersectionObserver(entries => {
 }, { threshold: 0.1 });
 const mapEl = document.getElementById('map');
 if (mapEl) observer.observe(mapEl);
+
+// ── Right-click Resolution Badge ──
+(function () {
+  let badge = null;
+
+  function closeBadge() {
+    if (badge) { badge.remove(); badge = null; }
+  }
+
+  mapEl.addEventListener('contextmenu', e => {
+    e.preventDefault();
+    closeBadge();
+
+    let clickedMap = main_map;
+    if      (e.target.closest('#alaska-inset'))        clickedMap = alaska_map;
+    else if (e.target.closest('#hawaii-inset'))        clickedMap = hawaii_map;
+    else if (e.target.closest('#samoa-inset'))         clickedMap = samoa_map;
+    else if (e.target.closest('#marianas-inset'))      clickedMap = marianas_map;
+    else if (e.target.closest('#virgin-islands-inset'))clickedMap = virgin_islands_map;
+    const zoom = clickedMap.getView().getZoom().toFixed(1);
+
+    badge = document.createElement('div');
+    badge.className = 'map-res-badge';
+    badge.innerHTML =
+      `<span>Screen Resolution: ${window.screen.width} &times; ${window.screen.height}</span>` +
+      `<span>Zoom Level: ${zoom}</span>`;
+
+    badge.style.left       = e.clientX + 'px';
+    badge.style.top        = e.clientY + 'px';
+    badge.style.visibility = 'hidden';
+    document.body.appendChild(badge);
+
+    requestAnimationFrame(() => {
+      const r = badge.getBoundingClientRect();
+      if (r.right  > window.innerWidth)  badge.style.left = (e.clientX - r.width)  + 'px';
+      if (r.bottom > window.innerHeight) badge.style.top  = (e.clientY - r.height) + 'px';
+      badge.style.visibility = '';
+    });
+  });
+
+  // Dismiss on the same events that close the native context menu
+  document.addEventListener('click',   closeBadge);
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeBadge(); });
+  window.addEventListener('blur',      closeBadge);
+})();
