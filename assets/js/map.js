@@ -711,43 +711,61 @@ legend.innerHTML = `
     <span class="legend-drag-hint">⠿</span>
   </div>
   <div class="legend-filter-row">
+    <div class="legend-slider" id="park-visibility-slider">
+      <div class="legend-slider-track"></div>
+      <div class="legend-slider-knob"></div>
+    </div>
     <span class="legend-filter-label">National Parks</span>
     <button id="park-visited-toggle" class="legend-toggle" onclick="toggleParkFilter('visited')">Visited</button>
     <button id="park-unvisited-toggle" class="legend-toggle" onclick="toggleParkFilter('unvisited')">Not Visited</button>
   </div>
   <div class="legend-filter-row">
+    <div class="legend-slider" id="mon-visibility-slider">
+      <div class="legend-slider-track"></div>
+      <div class="legend-slider-knob"></div>
+    </div>
     <span class="legend-filter-label">National<br>Monuments</span>
     <button id="mon-visited-toggle" class="legend-toggle" onclick="toggleMonFilter('visited')">Visited</button>
     <button id="mon-unvisited-toggle" class="legend-toggle" onclick="toggleMonFilter('unvisited')">Not Visited</button>
   </div>
   <div class="legend-agencies">
-    <div class="legend-agencies-title">Governing Agencies</div>
+    <div class="legend-agencies-header" id="agency-row-all">
+      <div class="legend-agency-checkbox checked" id="agency-check-all"></div>
+      <span class="legend-agencies-title">Governing Agencies</span>
+    </div>
     <ul class="legend-items">
-      <li class="legend-row">
+      <li class="legend-row legend-agency-row" id="agency-row-afrh">
+        <div class="legend-agency-checkbox checked" id="agency-check-afrh"></div>
         <img src="assets/symbology/afrh-logo.svg" class="legend-icon-img" />
         <span>Armed Forces Retirement Home</span>
       </li>
-      <li class="legend-row">
+      <li class="legend-row legend-agency-row" id="agency-row-blm">
+        <div class="legend-agency-checkbox checked" id="agency-check-blm"></div>
         <img src="assets/symbology/blm-logo.svg" class="legend-icon-img" />
         <span>Bureau of Land Management</span>
       </li>
-      <li class="legend-row">
+      <li class="legend-row legend-agency-row" id="agency-row-noaa">
+        <div class="legend-agency-checkbox checked" id="agency-check-noaa"></div>
         <img src="assets/symbology/noaa-logo.svg" class="legend-icon-img" />
         <span>NOAA</span>
       </li>
-      <li class="legend-row">
+      <li class="legend-row legend-agency-row" id="agency-row-nps">
+        <div class="legend-agency-checkbox checked" id="agency-check-nps"></div>
         <img src="assets/symbology/nps-logo.svg" class="legend-icon-img" />
         <span>National Park Service</span>
       </li>
-      <li class="legend-row">
+      <li class="legend-row legend-agency-row" id="agency-row-usarmy">
+        <div class="legend-agency-checkbox checked" id="agency-check-usarmy"></div>
         <img src="assets/symbology/army-logo.svg" class="legend-icon-img" />
         <span>U.S. Army</span>
       </li>
-      <li class="legend-row">
+      <li class="legend-row legend-agency-row" id="agency-row-usfws">
+        <div class="legend-agency-checkbox checked" id="agency-check-usfws"></div>
         <img src="assets/symbology/usfws-logo.svg" class="legend-icon-img" />
         <span>U.S. Fish &amp; Wildlife Service</span>
       </li>
-      <li class="legend-row">
+      <li class="legend-row legend-agency-row" id="agency-row-usfs">
+        <div class="legend-agency-checkbox checked" id="agency-check-usfs"></div>
         <img src="assets/symbology/usfs-logo.svg" class="legend-icon-img" />
         <span>U.S. Forest Service</span>
       </li>
@@ -853,38 +871,101 @@ legendExpandBtn.addEventListener('click', e => {
   legendMinBtn.style.display    = 'flex';
 });
 
-// ── Park filters ──
-const parkFilter = { visited: false, unvisited: false };
+// ── Filter state ──
+let parksVisible = true;
+let monsVisible  = true;
 
-function toggleParkFilter(which) {
-  parkFilter[which] = !parkFilter[which];
-  document.getElementById(`park-${which}-toggle`).classList.toggle('active', parkFilter[which]);
+const AGENCY_KEYS = ['afrh', 'blm', 'noaa', 'nps', 'usarmy', 'usfws', 'usfs'];
+const AGENCY_MATCH = {
+  afrh:   'Armed Forces Retirement Home',
+  blm:    'Bureau of Land Management',
+  noaa:   'NOAA',
+  nps:    'National Park Service',
+  usarmy: 'U.S. Army',
+  usfws:  'U.S. Fish & Wildlife Service',
+  usfs:   'U.S. Forest Service',
+};
+const agencyVisible = { afrh: true, blm: true, noaa: true, nps: true, usarmy: true, usfws: true, usfs: true };
+
+const parkFilter = { visited: false, unvisited: false };
+const monFilter  = { visited: false, unvisited: false };
+
+function applyAllFilters() {
   closePopup();
   vectorSource.getFeatures().forEach(f => {
-    if (f.get('type') !== 'park') return;
+    const type      = f.get('type');
+    const agency    = f.get('agency') || (type === 'park' ? 'National Park Service' : null);
     const isVisited = f.get('visited');
-    const hidden = (!isVisited && parkFilter.visited) || (isVisited && parkFilter.unvisited);
-    hidden ? f.setStyle([]) : restoreStyle(f);
+
+    if (type === 'park' && !parksVisible) { f.setStyle([]); return; }
+    if (type === 'mon'  && !monsVisible)  { f.setStyle([]); return; }
+
+    if (agency) {
+      for (const key of AGENCY_KEYS) {
+        if (!agencyVisible[key] && agency.includes(AGENCY_MATCH[key])) { f.setStyle([]); return; }
+      }
+    }
+
+    if (type === 'park' && ((!isVisited && parkFilter.visited) || (isVisited && parkFilter.unvisited))) { f.setStyle([]); return; }
+    if (type === 'mon'  && ((!isVisited && monFilter.visited)  || (isVisited && monFilter.unvisited)))  { f.setStyle([]); return; }
+
+    restoreStyle(f);
   });
   if (alaska_map) alaska_map.render();
   if (hawaii_map) hawaii_map.render();
 }
 
-// ── Monument filters ──
-const monFilter = { visited: false, unvisited: false };
+// ── Park visibility slider ──
+document.getElementById('park-visibility-slider').addEventListener('click', () => {
+  parksVisible = !parksVisible;
+  document.getElementById('park-visibility-slider').classList.toggle('off', !parksVisible);
+  applyAllFilters();
+});
 
+// ── Monument visibility slider ──
+document.getElementById('mon-visibility-slider').addEventListener('click', () => {
+  monsVisible = !monsVisible;
+  document.getElementById('mon-visibility-slider').classList.toggle('off', !monsVisible);
+  applyAllFilters();
+});
+
+// ── Agency visibility checkboxes ──
+function syncAllAgencyCheckbox() {
+  const allOn = AGENCY_KEYS.every(k => agencyVisible[k]);
+  document.getElementById('agency-check-all').classList.toggle('checked', allOn);
+}
+
+AGENCY_KEYS.forEach(key => {
+  document.getElementById(`agency-row-${key}`).addEventListener('click', () => {
+    agencyVisible[key] = !agencyVisible[key];
+    document.getElementById(`agency-check-${key}`).classList.toggle('checked', agencyVisible[key]);
+    syncAllAgencyCheckbox();
+    applyAllFilters();
+  });
+});
+
+document.getElementById('agency-row-all').addEventListener('click', () => {
+  const turnOn = !AGENCY_KEYS.every(k => agencyVisible[k]);
+  AGENCY_KEYS.forEach(key => {
+    agencyVisible[key] = turnOn;
+    document.getElementById(`agency-check-${key}`).classList.toggle('checked', turnOn);
+  });
+  document.getElementById('agency-check-all').classList.toggle('checked', turnOn);
+  applyAllFilters();
+});
+
+// ── Park filters ──
+function toggleParkFilter(which) {
+  parkFilter[which] = !parkFilter[which];
+  document.getElementById(`park-${which}-toggle`).classList.toggle('active', parkFilter[which]);
+  applyAllFilters();
+}
+
+// ── Monument filters ──
 function toggleMonFilter(which) {
   monFilter[which] = !monFilter[which];
   document.getElementById(`mon-${which}-toggle`).classList.toggle('active', monFilter[which]);
-  closePopup();
-  vectorSource.getFeatures().forEach(f => {
-    if (f.get('type') !== 'mon') return;
-    const isVisited = f.get('visited');
-    const hidden = (!isVisited && monFilter.visited) || (isVisited && monFilter.unvisited);
-    hidden ? f.setStyle([]) : restoreStyle(f);
-  });
-  if (alaska_map) alaska_map.render();
-  if (hawaii_map) hawaii_map.render();
+  applyAllFilters();
 }
 
 // ── Reset Extents ──
