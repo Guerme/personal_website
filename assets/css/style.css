@@ -79,6 +79,8 @@ body {
     0 0 12px rgba(255, 255, 255, 0.95),
     0 0 30px rgba(255, 255, 255, 0.70),
     0 0 45px rgba(255, 255, 255, 0.40);
+  opacity: 0;
+  transition: opacity 0.6s ease;
 }
 
 /* ── Travels Nav ── */
@@ -91,6 +93,13 @@ body {
   display: flex;
   flex-direction: row;
   align-items: stretch;
+  opacity: 0;
+  transition: opacity 0.6s ease 0.2s;
+}
+
+.page-loaded .cloud-name,
+.page-loaded .travels-nav {
+  opacity: 1;
 }
 
 /* The clickable vertical tab handle */
