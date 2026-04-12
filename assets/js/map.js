@@ -1152,13 +1152,29 @@ if (mapEl) observer.observe(mapEl);
     else if (e.target.closest('#virgin-islands-inset'))clickedMap = virgin_islands_map;
     const zoom = clickedMap.getView().getZoom().toFixed(1);
 
+    const mapElRect = clickedMap.getTargetElement().getBoundingClientRect();
+    const pixel = [e.clientX - mapElRect.left, e.clientY - mapElRect.top];
+    const coord = clickedMap.getCoordinateFromPixel(pixel);
+    const lonLat = ol.proj.toLonLat(coord);
+    const lat = lonLat[1].toFixed(5);
+    const lon = lonLat[0].toFixed(5);
+    const coordText = `${lat}, ${lon}`;
+
     badge = document.createElement('div');
     badge.className = 'map-res-badge';
-    badge.innerHTML =
-      `<span>Screen Resolution: ${window.screen.width} &times; ${window.screen.height}</span>` +
-      `<span>Zoom Level: ${zoom}</span>` +
-      `<span>Page Scale: ${pageScale}</span>` + 
-      `<span>Zoom Scale: ${zoomScale}</span>`;
+    const coordSpan = document.createElement('span');
+    coordSpan.style.cursor = 'pointer';
+    coordSpan.title = 'Click to copy';
+    coordSpan.textContent = `Coordinates: ${coordText}`;
+    coordSpan.addEventListener('click', e => {
+      e.stopPropagation();
+      navigator.clipboard.writeText(coordText);
+      closeBadge();
+    });
+    const zoomSpan = document.createElement('span');
+    zoomSpan.textContent = `Zoom Level: ${zoom}`;
+    badge.appendChild(coordSpan);
+    badge.appendChild(zoomSpan);
 
     badge.style.left       = e.clientX + 'px';
     badge.style.top        = e.clientY + 'px';

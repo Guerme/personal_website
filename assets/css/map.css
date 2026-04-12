@@ -500,7 +500,7 @@ body.is-map-page {
   display: flex;
   flex-direction: column;
   gap: 3px;
-  pointer-events: none;
+  pointer-events: auto;
   user-select: none;
   animation: badgeFadeIn 0.12s ease;
 }
