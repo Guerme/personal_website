@@ -230,6 +230,46 @@ body.is-map-page {
   margin-top: 8px;
 }
 
+.legend-stats {
+  border-top: 1px solid var(--card-border);
+  margin-top: 8px;
+  padding: 8px 12px 10px;
+}
+
+.legend-stats-title {
+  font-family: var(--font-body);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--ink-soft);
+  text-align: center;
+  margin-bottom: 6px;
+}
+
+.legend-stats-row {
+  font-family: var(--font-body);
+  font-size: 11px;
+  color: var(--ink-soft);
+  margin-bottom: 3px;
+}
+
+.legend-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 3px 6px;
+  margin-top: 6px;
+}
+
+.legend-stats-grid > div {
+  font-family: var(--font-body);
+  font-size: 11px;
+  color: var(--ink-soft);
+}
+
+.legend-stats-agency {
+  font-weight: 600;
+}
+
 .legend-agencies-header {
   display: flex;
   align-items: center;

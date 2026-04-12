@@ -380,6 +380,31 @@ function makeFeatures(data, type) {
   });
 }
 
+function updateLegendStats(nationalParks, nationalMonuments) {
+  const parkVisited = nationalParks.filter(d => d.visited).length;
+  const monVisited  = nationalMonuments.filter(d => d.visited).length;
+  document.getElementById('legend-stats-parks').textContent = `${parkVisited} / ${nationalParks.length} national parks visited`;
+  document.getElementById('legend-stats-mons').textContent  = `${monVisited} / ${nationalMonuments.length} national monuments visited`;
+
+  const AGENCY_LABELS = { afrh: 'AFRH', blm: 'BLM', noaa: 'NOAA', nps: 'NPS', usarmy: 'Army', usfws: 'USFWS', usfs: 'USFS' };
+  const counts = { afrh: 0, blm: 0, noaa: 0, nps: nationalParks.length, usarmy: 0, usfws: 0, usfs: 0 };
+  nationalMonuments.forEach(d => {
+    const a = d.agency || '';
+    if      (a.includes('Armed Forces Retirement Home'))  counts.afrh++;
+    else if (a.includes('Bureau of Land Management'))     counts.blm++;
+    else if (a.includes('NOAA'))                          counts.noaa++;
+    else if (a.includes('National Park Service'))         counts.nps++;
+    else if (a.includes('U.S. Army'))                     counts.usarmy++;
+    else if (a.includes('U.S. Fish & Wildlife Service'))  counts.usfws++;
+    else if (a.includes('U.S. Forest Service'))           counts.usfs++;
+  });
+  const grid = document.getElementById('legend-stats-grid');
+  grid.innerHTML = Object.entries(counts)
+    .sort((a, b) => b[1] - a[1])
+    .map(([key, n]) => `<div><span class="legend-stats-agency">${AGENCY_LABELS[key]}</span>: ${n}</div>`)
+    .join('');
+}
+
 fetch('assets/constants.json')
   .then(r => r.json())
   .then(({ nationalParks, nationalMonuments }) => {
@@ -387,6 +412,7 @@ fetch('assets/constants.json')
       ...makeFeatures(nationalParks, 'park'),
       ...makeFeatures(nationalMonuments, 'mon'),
     ]);
+    updateLegendStats(nationalParks, nationalMonuments);
   });
 
 let photoIndex = {};
@@ -771,6 +797,12 @@ legend.innerHTML = `
       </li>
     </ul>
   </div>
+  <div class="legend-stats">
+    <div class="legend-stats-title">Parks and Monuments Stats</div>
+    <div class="legend-stats-row" id="legend-stats-parks">— / — national parks visited</div>
+    <div class="legend-stats-row" id="legend-stats-mons">— / — national monuments visited</div>
+    <div class="legend-stats-grid" id="legend-stats-grid"></div>
+  </div>
 `;
 
 legend.style.visibility = 'hidden';
@@ -956,14 +988,18 @@ document.getElementById('agency-row-all').addEventListener('click', () => {
 
 // ── Park filters ──
 function toggleParkFilter(which) {
+  const other = which === 'visited' ? 'unvisited' : 'visited';
   parkFilter[which] = !parkFilter[which];
+  if (parkFilter[which]) { parkFilter[other] = false; document.getElementById(`park-${other}-toggle`).classList.remove('active'); }
   document.getElementById(`park-${which}-toggle`).classList.toggle('active', parkFilter[which]);
   applyAllFilters();
 }
 
 // ── Monument filters ──
 function toggleMonFilter(which) {
+  const other = which === 'visited' ? 'unvisited' : 'visited';
   monFilter[which] = !monFilter[which];
+  if (monFilter[which]) { monFilter[other] = false; document.getElementById(`mon-${other}-toggle`).classList.remove('active'); }
   document.getElementById(`mon-${which}-toggle`).classList.toggle('active', monFilter[which]);
   applyAllFilters();
 }
