@@ -4,7 +4,7 @@ const zoomScale = (4.0 + 1.2 * pageScale) / 5.2;
 
 // ── Map Configs ──
 const MAP_CONFIGS = {
-  main:          { center: [-100,    38    ], zoom: 5.2 * zoomScale },
+  main:          { center: [-99,    37    ], zoom: 5.2 * zoomScale },
   alaska:        { center: [-153,    61    ], zoom: 3.4 * zoomScale },
   hawaii:        { center: [-165.1,  20    ], zoom: 3.9 * zoomScale },
   samoa:         { center: [-169.7, -14.4  ], zoom: 7   * zoomScale },
@@ -413,6 +413,7 @@ fetch('assets/constants.json')
       ...makeFeatures(nationalMonuments, 'mon'),
     ]);
     updateLegendStats(nationalParks, nationalMonuments);
+    clampLegend();
   });
 
 let photoIndex = {};
@@ -758,8 +759,9 @@ legend.innerHTML = `
     <div class="legend-agencies-header" id="agency-row-all">
       <div class="legend-agency-checkbox checked" id="agency-check-all"></div>
       <span class="legend-agencies-title">Governing Agencies</span>
+      <button class="legend-collapse-btn" id="agencies-collapse-btn" title="Collapse"><span>⌃</span><span>⌃</span><span>⌃</span></button>
     </div>
-    <ul class="legend-items">
+    <ul class="legend-items" id="legend-agencies-body">
       <li class="legend-row legend-agency-row" id="agency-row-afrh">
         <div class="legend-agency-checkbox checked" id="agency-check-afrh"></div>
         <img src="assets/symbology/afrh-logo.svg" class="legend-icon-img" />
@@ -798,26 +800,44 @@ legend.innerHTML = `
     </ul>
   </div>
   <div class="legend-stats">
-    <div class="legend-stats-title">Parks and Monuments Stats</div>
-    <div class="legend-stats-row" id="legend-stats-parks">— / — national parks visited</div>
-    <div class="legend-stats-row" id="legend-stats-mons">— / — national monuments visited</div>
-    <div class="legend-stats-grid" id="legend-stats-grid"></div>
+    <div class="legend-stats-header">
+      <span class="legend-stats-title">Parks and Monuments Stats</span>
+      <button class="legend-collapse-btn" id="stats-collapse-btn" title="Collapse"><span>⌃</span><span>⌃</span><span>⌃</span></button>
+    </div>
+    <div id="legend-stats-body">
+      <div class="legend-stats-row" id="legend-stats-parks">— / — national parks visited</div>
+      <div class="legend-stats-row" id="legend-stats-mons">— / — national monuments visited</div>
+      <div class="legend-stats-grid" id="legend-stats-grid"></div>
+    </div>
   </div>
 `;
 
 legend.style.visibility = 'hidden';
 legend.addEventListener('pointerdown', e => e.stopPropagation());
 legend.addEventListener('click',       e => e.stopPropagation());
-main_map.getViewport().appendChild(legend);
+main_map.getTargetElement().appendChild(legend);
+
+function clampLegend() {
+  const vp = main_map.getViewport();
+  const vpW = vp.offsetWidth;
+  const vpH = vp.offsetHeight;
+  let x = parseFloat(legend.style.left) || 0;
+  let y = parseFloat(legend.style.top)  || 0;
+  x = Math.max(0, Math.min(x, vpW - legend.offsetWidth  * s));
+  y = Math.max(0, Math.min(y, vpH - legend.offsetHeight * s));
+  legend.style.left = `${x}px`;
+  legend.style.top  = `${y}px`;
+}
 
 main_map.once('rendercomplete', () => {
-  const pixel = main_map.getPixelFromCoordinate(ol.proj.fromLonLat([-68.8, 34.5]));
+  const pixel = main_map.getPixelFromCoordinate(ol.proj.fromLonLat([-68.8, 32]));
   if (pixel) {
     const vpWidth = main_map.getViewport().offsetWidth;
     legend.style.right  = 'auto';
     legend.style.bottom = 'auto';
-    legend.style.left   = `${vpWidth - legend.offsetWidth - 5}px`;
-    legend.style.top    = `${pixel[1] - legend.offsetHeight / 2}px`;
+    legend.style.left   = `${vpWidth - legend.offsetWidth * s - 5}px`;
+    legend.style.top    = `${pixel[1] - legend.offsetHeight * s / 2}px`;
+    clampLegend();
   }
   legend.style.visibility = 'visible';
 });
@@ -839,8 +859,8 @@ document.addEventListener('mousemove', e => {
   const vpRect = vp.getBoundingClientRect();
   let x = e.clientX - vpRect.left - dragOffX;
   let y = e.clientY - vpRect.top  - dragOffY;
-  x = Math.max(0, Math.min(x, vpRect.width  - legend.offsetWidth));
-  y = Math.max(0, Math.min(y, vpRect.height - legend.offsetHeight));
+  x = Math.max(0, Math.min(x, vpRect.width  - legend.offsetWidth  * s));
+  y = Math.max(0, Math.min(y, vpRect.height - legend.offsetHeight * s));
   legend.style.left   = `${x}px`;
   legend.style.top    = `${y}px`;
   legend.style.right  = 'auto';
@@ -883,7 +903,8 @@ legendMinBtn.addEventListener('click', e => {
   legendFullWidth  = legend.offsetWidth;
   legendFullHeight = legend.offsetHeight;
   legendSavedLeft  = legend.style.left;
-  legend.style.left   = `${parseFloat(legend.style.left) + legendFullWidth - 30}px`;
+  const vpW = main_map.getViewport().offsetWidth;
+  legend.style.left   = `${vpW - 30 * s - 5}px`;
   legend.style.width  = '30px';
   legend.style.height = `${legendFullHeight}px`;
   legend.style.overflow = 'hidden';
@@ -894,7 +915,8 @@ legendMinBtn.addEventListener('click', e => {
 
 legendExpandBtn.addEventListener('click', e => {
   e.stopPropagation();
-  legend.style.left   = legendSavedLeft;
+  const vpW = main_map.getViewport().offsetWidth;
+  legend.style.left   = `${vpW - legendFullWidth * s - 5}px`;
   legend.style.width  = `${legendFullWidth}px`;
   legend.style.height = '';
   legend.style.overflow = '';
@@ -946,6 +968,30 @@ function applyAllFilters() {
   if (alaska_map) alaska_map.render();
   if (hawaii_map) hawaii_map.render();
 }
+
+// ── Section collapse toggles ──
+const UP_CHEVRONS   = '<span>⌃</span><span>⌃</span><span>⌃</span>';
+const DOWN_CHEVRONS = '<span>⌄</span><span>⌄</span><span>⌄</span>';
+
+document.getElementById('agencies-collapse-btn').addEventListener('click', e => {
+  e.stopPropagation();
+  const body = document.getElementById('legend-agencies-body');
+  const btn  = e.currentTarget;
+  const collapsing = body.style.display !== 'none';
+  body.style.display = collapsing ? 'none' : '';
+  btn.innerHTML = collapsing ? DOWN_CHEVRONS : UP_CHEVRONS;
+  clampLegend();
+});
+
+document.getElementById('stats-collapse-btn').addEventListener('click', e => {
+  e.stopPropagation();
+  const body = document.getElementById('legend-stats-body');
+  const btn  = e.currentTarget;
+  const collapsing = body.style.display !== 'none';
+  body.style.display = collapsing ? 'none' : '';
+  btn.innerHTML = collapsing ? DOWN_CHEVRONS : UP_CHEVRONS;
+  clampLegend();
+});
 
 // ── Park visibility slider ──
 document.getElementById('park-visibility-slider').addEventListener('click', () => {

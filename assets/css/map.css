@@ -83,8 +83,8 @@ body.is-map-page {
   bottom: 20px;
   right: 20px;
   transform: scale(var(--page-scale));
-  transform-origin: bottom right;
-  z-index: 10;
+  transform-origin: top left;
+  z-index: 20;
   background: rgb(250, 249, 249);
   border: 1px solid var(--card-border);
   border-radius: 12px;
@@ -236,6 +236,12 @@ body.is-map-page {
   padding: 8px 12px 10px;
 }
 
+.legend-stats-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
 .legend-stats-title {
   font-family: var(--font-body);
   font-size: 12px;
@@ -243,7 +249,26 @@ body.is-map-page {
   letter-spacing: 0.08em;
   color: var(--ink-soft);
   text-align: center;
-  margin-bottom: 6px;
+  flex: 1;
+}
+
+.legend-collapse-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  line-height: 0.5;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 2px 10px;
+  color: var(--ink-soft);
+  font-size: 11px;
+  transition: opacity 0.15s;
+  flex-shrink: 0;
+}
+
+.legend-collapse-btn:hover {
+  opacity: 1;
 }
 
 .legend-stats-row {
