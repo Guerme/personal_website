@@ -15,17 +15,41 @@
   </div>
 
   <!-- CLOUD NAME -->
-  <h1 class="cloud-name">Winn Ketchum</h1>
+  <h1 class="cloud-name"><span id="cloud-winn">Winn </span><span id="cloud-ketchum">Ketchum</span></h1>
 
-  <!-- RIGHT NAV ── "Travels" expandable panel -->
+  <!-- "About" dropdown -->
+  <nav class="travels-nav" id="about-nav">
+    <button class="travels-tab" id="about-tab" onclick="toggleAbout()" aria-expanded="false" aria-controls="about-panel">
+      <span class="travels-tab-arrow">›</span>
+      <span class="travels-tab-label">About</span>
+    </button>
+    <div class="travels-panel" id="about-panel" aria-hidden="true">
+      <a href="#" class="travels-link" onclick="return false;">Resume / CV</a>
+    </div>
+  </nav>
+
+  <!-- "Travels" dropdown -->
   <nav class="travels-nav" id="travels-nav">
+    <button class="travels-tab" id="travels-tab" onclick="toggleTravels()" aria-expanded="false" aria-controls="travels-panel">
+      <span class="travels-tab-arrow">›</span>
+      <span class="travels-tab-label">Travels</span>
+    </button>
     <div class="travels-panel" id="travels-panel" aria-hidden="true">
       <a href="map.html" class="travels-link">National Parks &amp; Monuments</a>
     </div>
-    <button class="travels-tab" id="travels-tab" onclick="toggleTravels()" aria-expanded="false" aria-controls="travels-panel">
-      <span class="travels-tab-label">Travels</span>
-      <span class="travels-tab-arrow">‹</span>
+  </nav>
+
+  <!-- "Contact" dropdown -->
+  <nav class="travels-nav" id="contact-nav">
+    <button class="travels-tab" id="contact-tab" onclick="toggleContact()" aria-expanded="false" aria-controls="contact-panel">
+      <span class="travels-tab-arrow">›</span>
+      <span class="travels-tab-label">Contact</span>
     </button>
+    <div class="travels-panel" id="contact-panel" aria-hidden="true">
+      <div class="travels-link contact-static" id="contact-phone-item"></div>
+      <div class="travels-link contact-copy" id="contact-email-item"></div>
+      <a id="contact-linkedin-item" target="_blank" class="travels-link">LinkedIn</a>
+    </div>
   </nav>
 
   <script>
@@ -37,6 +61,67 @@
     }
 
     window.addEventListener('load', () => {
+      const cloudName   = document.querySelector('.cloud-name');
+      const cloudBottom = cloudName.getBoundingClientRect().bottom;
+      const hScale      = window.innerHeight / 959;
+      const topScale    = (-220 + 480 * hScale) / 260;
+      const top         = cloudBottom + (260 * topScale);
+
+      // Travels: left edge at K
+      const kLeft = document.getElementById('cloud-ketchum').getBoundingClientRect().left;
+      const travelsNav = document.getElementById('travels-nav');
+      travelsNav.style.left      = `${kLeft}px`;
+      travelsNav.style.top       = `${top}px`;
+      travelsNav.style.right     = 'auto';
+      travelsNav.style.transform = 'none';
+
+      // About: right edge at the right of the second 'n' in "Winn"
+      const winnText = document.getElementById('cloud-winn').firstChild;
+      const range = document.createRange();
+      range.setStart(winnText, 3);
+      range.setEnd(winnText, 4);
+      const nRight = range.getBoundingClientRect().right;
+      const aboutNav = document.getElementById('about-nav');
+      aboutNav.style.left      = `${nRight - aboutNav.offsetWidth}px`;
+      aboutNav.style.top       = `${top}px`;
+      aboutNav.style.right     = 'auto';
+      aboutNav.style.transform = 'none';
+
+      // Contact: left edge at travelsRect.right + same gap as travels-to-about
+      const travelsRect = travelsNav.getBoundingClientRect();
+      const aboutRect   = aboutNav.getBoundingClientRect();
+      const gap = travelsRect.left - aboutRect.right;
+      const contactNav = document.getElementById('contact-nav');
+      contactNav.style.left      = `${travelsRect.right + gap}px`;
+      contactNav.style.top       = `${top}px`;
+      contactNav.style.right     = 'auto';
+      contactNav.style.transform = 'none';
+
+      // Build contact info in JS to avoid plain-text scraping
+      const _p = ['(', '4','0','6',')',' ','3','7','0','-','2','7','8','3'].join('');
+      const _u = ['W','i','n','n','.','K','e','t','c','h','u','m'].join('');
+      const _d = ['g','m','a','i','l','.','c','o','m'].join('');
+      const _e = _u + '\u0040' + _d;
+      const _li = ['h','t','t','p','s','://','w','w','w','.','l','i','n','k','e','d','i','n',
+                   '.','c','o','m','/','i','n','/','w','i','n','n','-','k','e','t','c','h','u','m',
+                   '-','a','4','0','6','5','6','4','2','/'].join('');
+
+      document.getElementById('contact-phone-item').textContent = 'Phone: ' + _p;
+
+      const emailItem = document.getElementById('contact-email-item');
+      emailItem.textContent = 'Email: ' + _e;
+      emailItem.addEventListener('click', () => {
+        navigator.clipboard.writeText(_e).then(() => {
+          emailItem.classList.add('tooltip-visible');
+          setTimeout(() => {
+            emailItem.classList.remove('tooltip-visible');
+          }, 1500);
+        });
+      });
+
+      const liItem = document.getElementById('contact-linkedin-item');
+      liItem.href = _li;
+
       document.body.classList.add('page-loaded');
     });
 
@@ -47,7 +132,24 @@
       const open  = nav.classList.toggle('open');
       tab.setAttribute('aria-expanded', open);
       panel.setAttribute('aria-hidden', !open);
-      tab.querySelector('.travels-tab-arrow').textContent = open ? '›' : '‹';
+    }
+
+    function toggleAbout() {
+      const nav   = document.getElementById('about-nav');
+      const tab   = document.getElementById('about-tab');
+      const panel = document.getElementById('about-panel');
+      const open  = nav.classList.toggle('open');
+      tab.setAttribute('aria-expanded', open);
+      panel.setAttribute('aria-hidden', !open);
+    }
+
+    function toggleContact() {
+      const nav   = document.getElementById('contact-nav');
+      const tab   = document.getElementById('contact-tab');
+      const panel = document.getElementById('contact-panel');
+      const open  = nav.classList.toggle('open');
+      tab.setAttribute('aria-expanded', open);
+      panel.setAttribute('aria-hidden', !open);
     }
   </script>
 

@@ -86,12 +86,9 @@ body {
 /* ── Travels Nav ── */
 .travels-nav {
   position: fixed;
-  right: 0;
-  top: 50%;
-  transform: translateY(-50%);
   z-index: 10;
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   align-items: stretch;
   opacity: 0;
   transition: opacity 0.6s ease 0.2s;
@@ -102,18 +99,17 @@ body {
   opacity: 1;
 }
 
-/* The clickable vertical tab handle */
+/* The clickable tab handle */
 .travels-tab {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
   justify-content: center;
   gap: 8px;
-  padding: 20px 10px;
+  padding: 5px 5px;
   background: var(--card-bg);
   border: 1px solid var(--card-border);
-  border-right: none;
-  border-radius: 12px 0 0 12px;
+  border-radius: 12px;
   cursor: pointer;
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
@@ -127,15 +123,17 @@ body {
   color: var(--ink);
 }
 
+.travels-nav.open .travels-tab {
+  border-radius: 12px 12px 0 0;
+  border-bottom-color: transparent;
+}
+
 .travels-tab-label {
   font-family: var(--font-body);
   font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  writing-mode: vertical-rl;
-  text-orientation: mixed;
-  transform: rotate(180deg);
   user-select: none;
 }
 
@@ -144,30 +142,31 @@ body {
   line-height: 1;
   transition: transform 0.3s ease;
   user-select: none;
+  transform: rotate(90deg);
 }
 
-/* The expandable panel */
+.travels-nav.open .travels-tab-arrow {
+  transform: rotate(-90deg);
+}
+
+/* The expandable dropdown panel */
 .travels-panel {
-  width: 0;
+  max-height: 0;
   overflow: hidden;
-  transition: width 0.3s ease;
+  transition: max-height 0.3s ease;
   background: var(--card-bg);
-  border: none;
-  border-radius: 12px 0 0 12px;
+  border-radius: 0 0 12px 12px;
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   box-shadow: var(--shadow);
   display: flex;
   flex-direction: column;
-  justify-content: center;
   white-space: nowrap;
 }
 
 .travels-nav.open .travels-panel {
-  width: 220px;
-  padding: 12px 0;
-  border: 1px solid var(--card-border);
-  border-right: none;
+  max-height: 300px;
+  border-color: var(--card-border);
 }
 
 .travels-link {
@@ -186,7 +185,43 @@ body {
 .travels-link:hover {
   color: var(--ink);
   background: rgba(61, 143, 166, 0.1);
-  padding-left: 26px;
+}
+
+/* ── Contact items ── */
+.contact-static {
+  cursor: default;
+}
+
+.contact-static:hover {
+  color: var(--ink-soft);
+  background: transparent;
+}
+
+.contact-copy {
+  cursor: pointer;
+  position: relative;
+}
+
+.contact-copy::after {
+  content: 'Copied!';
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 4px);
+  transform: translateX(-50%);
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 6px;
+  padding: 3px 8px;
+  font-size: 11px;
+  color: var(--ink);
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.contact-copy.tooltip-visible::after {
+  opacity: 1;
 }
 
 /* ── Animation (also used by map.css) ── */
