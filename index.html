@@ -24,7 +24,7 @@
       <span class="travels-tab-label">About</span>
     </button>
     <div class="travels-panel" id="about-panel" aria-hidden="true">
-      <a href="#" class="travels-link" onclick="return false;">Resume / CV</a>
+      <a href="resume.html" class="travels-link">Resume / CV</a>
     </div>
   </nav>
 
@@ -67,27 +67,39 @@
       const topScale    = (-220 + 480 * hScale) / 260;
       const top         = cloudBottom + (260 * topScale);
 
-      // Travels: left edge at K
-      const kLeft = document.getElementById('cloud-ketchum').getBoundingClientRect().left;
-      const travelsNav = document.getElementById('travels-nav');
-      travelsNav.style.left      = `${kLeft}px`;
-      travelsNav.style.top       = `${top}px`;
-      travelsNav.style.right     = 'auto';
-      travelsNav.style.transform = 'none';
-
-      // About: right edge at the right of the second 'n' in "Winn"
+      // Measure character anchors in "Winn "
       const winnText = document.getElementById('cloud-winn').firstChild;
       const range = document.createRange();
+
+      // Left of 'i' (index 1) in "Winn "
+      range.setStart(winnText, 1);
+      range.setEnd(winnText, 2);
+      const iLeft = range.getBoundingClientRect().left;
+
+      // Right of second 'n' (index 3) in "Winn " — used for inter-word gap
       range.setStart(winnText, 3);
       range.setEnd(winnText, 4);
       const nRight = range.getBoundingClientRect().right;
+
+      // Left of 'K' in "Ketchum" — used for inter-word gap
+      const kLeft = document.getElementById('cloud-ketchum').getBoundingClientRect().left;
+      const interWordGap = kLeft - nRight;
+
+      // About: left edge at 'i'
       const aboutNav = document.getElementById('about-nav');
-      aboutNav.style.left      = `${nRight - aboutNav.offsetWidth}px`;
+      aboutNav.style.left      = `${iLeft}px`;
       aboutNav.style.top       = `${top}px`;
       aboutNav.style.right     = 'auto';
       aboutNav.style.transform = 'none';
 
-      // Contact: left edge at travelsRect.right + same gap as travels-to-about
+      // Travels: same inter-word gap to the right of About
+      const travelsNav = document.getElementById('travels-nav');
+      travelsNav.style.left      = `${iLeft + aboutNav.offsetWidth + interWordGap}px`;
+      travelsNav.style.top       = `${top}px`;
+      travelsNav.style.right     = 'auto';
+      travelsNav.style.transform = 'none';
+
+      // Contact: same gap again to the right of Travels
       const travelsRect = travelsNav.getBoundingClientRect();
       const aboutRect   = aboutNav.getBoundingClientRect();
       const gap = travelsRect.left - aboutRect.right;

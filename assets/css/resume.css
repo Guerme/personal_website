@@ -1,0 +1,248 @@
+/* ── Resume Page ── */
+
+body.resume-page {
+  overflow-y: auto;
+  overflow-x: hidden;
+  height: auto;
+  min-height: 100%;
+}
+
+/* ── Background ── */
+.resume-bg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+}
+
+.resume-bg-img {
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+  object-position: center;
+  display: block;
+  opacity: 0;
+  transition: opacity 1s ease;
+  filter: brightness(0.35) blur(2px);
+  transform: scale(1.02);
+}
+
+.resume-bg-img.loaded {
+  opacity: 1;
+}
+
+/* ── Nav ── */
+.site-nav {
+  position: fixed;
+  top: 16px;
+  left: 16px;
+  z-index: 10;
+  animation: fadeUp 0.6s ease both;
+}
+
+.nav-link {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--accent);
+  text-decoration: none;
+  letter-spacing: 0.04em;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 14px 6px 10px;
+  border: 1px solid var(--accent-light);
+  border-radius: 100px;
+  background: var(--card-bg);
+  backdrop-filter: blur(12px);
+  transition: all 0.2s ease;
+}
+
+.nav-link:hover {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+  transform: translateX(-3px);
+}
+
+/* ── Main Content ── */
+.resume-main {
+  position: relative;
+  z-index: 1;
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 72px 24px 80px;
+}
+
+/* ── Cards ── */
+.resume-card {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  box-shadow: var(--shadow);
+  padding: 28px 32px;
+  margin-bottom: 20px;
+  animation: fadeUp 0.5s ease both;
+}
+
+.resume-card:nth-child(3) { animation-delay: 0.08s; }
+.resume-card:nth-child(4) { animation-delay: 0.13s; }
+.resume-card:nth-child(5) { animation-delay: 0.18s; }
+.resume-card:nth-child(6) { animation-delay: 0.23s; }
+
+/* ── Section Headings ── */
+.section-heading {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin: 0 0 20px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--card-border);
+}
+
+/* ── Summary ── */
+.summary-text {
+  font-size: 14px;
+  line-height: 1.75;
+  color: var(--ink);
+}
+
+/* ── Job Entries ── */
+.job-entry {
+  margin-bottom: 24px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid rgba(61, 143, 166, 0.08);
+}
+
+.job-entry:last-child {
+  margin-bottom: 0;
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+.job-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+  margin-bottom: 3px;
+}
+
+.job-left {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.job-company {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.job-location {
+  font-size: 12px;
+  color: var(--ink-soft);
+  letter-spacing: 0.03em;
+}
+
+.job-dates {
+  font-size: 12px;
+  color: var(--ink-soft);
+  white-space: nowrap;
+  letter-spacing: 0.03em;
+}
+
+.job-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--accent);
+  letter-spacing: 0.04em;
+  margin-bottom: 8px;
+}
+
+.job-title-note {
+  font-weight: 400;
+  color: var(--ink-soft);
+  font-size: 12px;
+}
+
+.job-bullets {
+  margin: 0;
+  padding-left: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.job-bullets li {
+  font-size: 13px;
+  line-height: 1.65;
+  color: var(--ink);
+}
+
+/* ── Software List ── */
+.software-list {
+  margin: 0;
+  padding-left: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.software-list li {
+  font-size: 13px;
+  line-height: 1.65;
+  color: var(--ink);
+}
+
+/* ── Education ── */
+.edu-entry {
+  margin-bottom: 18px;
+}
+
+.edu-entry:last-child {
+  margin-bottom: 0;
+}
+
+.edu-degree {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 2px;
+}
+
+.edu-emphasis {
+  font-weight: 400;
+  font-style: italic;
+  font-size: 13px;
+  color: var(--ink-soft);
+}
+
+.edu-school {
+  font-size: 13px;
+  color: var(--ink-soft);
+  letter-spacing: 0.02em;
+}
+
+/* ── Scrollbar ── */
+body.resume-page::-webkit-scrollbar {
+  width: 6px;
+}
+body.resume-page::-webkit-scrollbar-track {
+  background: transparent;
+}
+body.resume-page::-webkit-scrollbar-thumb {
+  background: var(--accent-light);
+  border-radius: 3px;
+}
+body.resume-page::-webkit-scrollbar-thumb:hover {
+  background: var(--accent);
+}
