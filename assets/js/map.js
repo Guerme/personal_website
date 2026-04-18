@@ -611,8 +611,9 @@ function buildPopupHTML(feature, sortedPhotos) {
   const label      = feature.get('type') === 'park' ? 'National Park' : 'National Monument';
   const visitedVal = feature.get('visited');
   const hasDate    = isDateVisited(visitedVal);
-  const status     = hasDate ? `Date Visited: ${formatVisitedDate(visitedVal)}` : 'Not Yet Visited';
-  const color      = hasDate ? '#5a8fa8' : '#c47878';
+  const isSpecial  = !hasDate && typeof visitedVal === 'string' && visitedVal.trim() !== '';
+  const status     = hasDate ? `Date Visited: ${formatVisitedDate(visitedVal)}` : isSpecial ? `Date Visited: ${visitedVal}` : 'Not Yet Visited';
+  const color      = (hasDate || isSpecial) ? '#5a8fa8' : '#c47878';
   const website    = feature.get('website');
 
   const websiteLine = website
