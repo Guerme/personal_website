@@ -582,6 +582,18 @@ lightboxNextBtn.addEventListener('click', () => {
 });
 lightboxCloseBtn.addEventListener('click', closeLightbox);
 lightboxEl.addEventListener('click', e => { if (e.target === lightboxEl) closeLightbox(); });
+document.addEventListener('keydown', e => {
+  if (lightboxEl.style.pointerEvents !== 'auto') return;
+  if (e.key === 'ArrowLeft') {
+    lightboxIndex = (lightboxIndex - 1 + lightboxPhotos.length) % lightboxPhotos.length;
+    updateLightboxImage();
+  } else if (e.key === 'ArrowRight') {
+    lightboxIndex = (lightboxIndex + 1) % lightboxPhotos.length;
+    updateLightboxImage();
+  } else if (e.key === 'Escape') {
+    closeLightbox();
+  }
+});
 
 // ── Popup ──
 const POPUP_GAP = 5;   // px gap between icon edge and popup — adjust here
