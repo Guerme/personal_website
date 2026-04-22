@@ -1200,33 +1200,20 @@ function addResetButton(mapInstance, center, zoom, horizontal = false, newMinimi
 
       // Minimized overlay — blue background + vertical label(s)
       const overlay = document.createElement('div');
-      const labelStyle = "font-family: 'DM Sans', sans-serif; font-size: 10px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(0,0,0,0.5); writing-mode: vertical-lr; transform: rotate(180deg); white-space: normal; word-break: break-word; max-width: 60px;";
+      const labelStyle = "font-family: 'DM Sans', sans-serif; font-size: 10px; font-weight: 600; letter-spacing: 0.08em; " +
+                        "text-transform: uppercase; color: rgba(0,0,0,0.5); writing-mode: vertical-lr; transform: rotate(180deg); " +
+                        "white-space: normal; word-break: break-word; max-width: 60px;";
 
-      if (expandOnMinimize) {
-        // Two-column layout: label name left, "Inset Map" right
-        overlay.style.cssText = 'position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #aad3df; display: none; flex-direction: row; z-index: 1;';
-        const col1 = document.createElement('div');
-        col1.style.cssText = 'flex: 1; display: flex; align-items: left; justify-content: left; padding-top: 28px; box-sizing: border-box; min-width: 0;';
-        const col1Label = document.createElement('div');
-        col1Label.textContent = label;
-        col1Label.style.cssText = labelStyle + ' max-width: 100%;';
-        col1.appendChild(col1Label);
-        const col2 = document.createElement('div');
-        col2.style.cssText = 'flex: 1; display: flex; align-items: left; justify-content: left; padding-top: 28px; box-sizing: border-box; min-width: 0;';
-        const col2Label = document.createElement('div');
-        col2Label.textContent = 'Inset Map';
-        col2Label.style.cssText = labelStyle + ' max-width: 100%;';
-        col2.appendChild(col2Label);
-        overlay.appendChild(col1);
-        overlay.appendChild(col2);
-      } else {
-        overlay.style.cssText = 'position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #aad3df; display: none; z-index: 1;';
-        const overlayLabel = document.createElement('div');
-        const reversedLabel = label.split(' ').reverse().join(' '); 
-        overlayLabel.textContent = `Inset Map ${reversedLabel}`;
-        overlayLabel.style.cssText = "font-family: 'DM Sans', sans-serif; font-size: 10px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(0,0,0,0.5); writing-mode: vertical-lr; transform: translateY(-50%) rotate(180deg); position: absolute; top: 50%; left: 4px; white-space: normal; word-break: break-word; max-width: 60px;";
-        overlay.appendChild(overlayLabel);
-      }
+      // Two vertical text columns as direct flex items, both anchored to the bottom
+      overlay.style.cssText = 'position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #aad3df; display: none; flex-direction: row; align-items: flex-end; padding-left: 4px; gap: 2px; box-sizing: border-box; padding-bottom: 10px; z-index: 1;';
+      const col1Label = document.createElement('div');
+      col1Label.textContent = label;
+      col1Label.style.cssText = labelStyle;
+      const col2Label = document.createElement('div');
+      col2Label.textContent = 'Inset Map';
+      col2Label.style.cssText = labelStyle;
+      overlay.appendChild(col1Label);
+      overlay.appendChild(col2Label);
       mapInstance.getViewport().appendChild(overlay);
 
       // Expand button (→) shown at top-left when minimized
@@ -1251,12 +1238,11 @@ function addResetButton(mapInstance, center, zoom, horizontal = false, newMinimi
 
         // Measure overlay label and expand width to fit text
         requestAnimationFrame(() => {
-          const labelEl = overlay.querySelector('div div') || overlay.querySelector('div');
-          if (labelEl) {
-            const labelHeight = labelEl.scrollHeight;
-            wrapper.style.width = `${labelHeight + 12}px`;
+          if (expandOnMinimize) {
+            wrapper.style.width = `${overlay.offsetHeight / 3}px`;
           } else {
-            wrapper.style.width = collapsedWidth;
+            const labelEl = overlay.querySelector('div div') || overlay.querySelector('div');
+            wrapper.style.width = labelEl ? `${labelEl.scrollHeight + 12}px` : collapsedWidth;
           }
         });
       });
@@ -1284,7 +1270,7 @@ HOME_EXTENTS.forEach(([m, center, zoom]) => {
                   : '';
   const newMin    = m === virgin_islands_map || m === alaska_map || m === marianas_map;
   const leftMin   = m === hawaii_map || m === samoa_map;
-  const expandMin = false;
+  const expandMin = m === hawaii_map || m === samoa_map;
   addResetButton(m, center, zoom, m === main_map, newMin, label, leftMin, expandMin);
 });
 
